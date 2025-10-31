@@ -5,41 +5,58 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function participantWithUid(participants, uid) {
-      return participants.where(participant, participant.uid == uid);
-    }
-
     function participantExists(participants, uid) {
-      return participantWithUid(participants, uid).size() == 1;
+      return participantExistsAtIndex(participants, uid, 0);
     }
 
-    function otherParticipantsUnchanged(existingParticipants, newParticipants, uid) {
-      return existingParticipants.every(participant,
-        participant.uid == uid || otherParticipantMatches(participant, newParticipants));
+    function participantExistsAtIndex(participants, uid, index) {
+      if (index >= participants.size()) {
+        return false;
+      }
+
+      if (participants[index].uid == uid) {
+        return true;
+      }
+
+      return participantExistsAtIndex(participants, uid, index + 1);
     }
 
-    function otherParticipantMatches(participant, newParticipants) {
-      let updated = participantWithUid(newParticipants, participant.uid);
-      return updated.size() == 1 && updated[0] == participant;
+    function participantsMatchWithoutUid(longerList, shorterList, uid) {
+      return participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, 0, 0, false);
     }
 
-    function noOtherParticipantChanged(existingParticipants, newParticipants, uid) {
-      return otherParticipantsUnchanged(existingParticipants, newParticipants, uid)
-        && otherParticipantsUnchanged(newParticipants, existingParticipants, uid);
+    function participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex, shortIndex, skipped) {
+      if (longIndex >= longerList.size()) {
+        return shortIndex >= shorterList.size() && skipped;
+      }
+
+      if (!skipped && longerList[longIndex].uid == uid) {
+        return participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex + 1, shortIndex, true);
+      }
+
+      if (shortIndex >= shorterList.size()) {
+        return false;
+      }
+
+      if (longerList[longIndex] != shorterList[shortIndex]) {
+        return false;
+      }
+
+      return participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex + 1, shortIndex + 1, skipped);
     }
 
     function isJoin(existingParticipants, newParticipants) {
       return newParticipants.size() == existingParticipants.size() + 1
         && participantExists(newParticipants, request.auth.uid)
         && !participantExists(existingParticipants, request.auth.uid)
-        && noOtherParticipantChanged(existingParticipants, newParticipants, request.auth.uid);
+        && participantsMatchWithoutUid(newParticipants, existingParticipants, request.auth.uid);
     }
 
     function isLeave(existingParticipants, newParticipants) {
       return existingParticipants.size() == newParticipants.size() + 1
         && participantExists(existingParticipants, request.auth.uid)
         && !participantExists(newParticipants, request.auth.uid)
-        && noOtherParticipantChanged(existingParticipants, newParticipants, request.auth.uid);
+        && participantsMatchWithoutUid(existingParticipants, newParticipants, request.auth.uid);
     }
 
     function isParticipantUpdateAllowed(existingParticipants, newParticipants) {
