@@ -10,15 +10,11 @@ service cloud.firestore {
     }
 
     function participantExistsAtIndex(participants, uid, index) {
-      if (index >= participants.size()) {
-        return false;
-      }
-
-      if (participants[index].uid == uid) {
-        return true;
-      }
-
-      return participantExistsAtIndex(participants, uid, index + 1);
+      return index >= participants.size()
+        ? false
+        : participants[index].uid == uid
+          ? true
+          : participantExistsAtIndex(participants, uid, index + 1);
     }
 
     function participantsMatchWithoutUid(longerList, shorterList, uid) {
@@ -26,23 +22,15 @@ service cloud.firestore {
     }
 
     function participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex, shortIndex, skipped) {
-      if (longIndex >= longerList.size()) {
-        return shortIndex >= shorterList.size() && skipped;
-      }
-
-      if (!skipped && longerList[longIndex].uid == uid) {
-        return participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex + 1, shortIndex, true);
-      }
-
-      if (shortIndex >= shorterList.size()) {
-        return false;
-      }
-
-      if (longerList[longIndex] != shorterList[shortIndex]) {
-        return false;
-      }
-
-      return participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex + 1, shortIndex + 1, skipped);
+      return longIndex >= longerList.size()
+        ? shortIndex >= shorterList.size() && skipped
+        : !skipped && longerList[longIndex].uid == uid
+          ? participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex + 1, shortIndex, true)
+          : shortIndex >= shorterList.size()
+            ? false
+            : longerList[longIndex] != shorterList[shortIndex]
+              ? false
+              : participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex + 1, shortIndex + 1, skipped);
     }
 
     function isJoin(existingParticipants, newParticipants) {
@@ -79,7 +67,7 @@ service cloud.firestore {
         && getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants is list
         && isParticipantUpdateAllowed(
           resource.data.participants,
-          getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants,
+          getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants
         );
     }
 
