@@ -34,13 +34,13 @@ This repository contains a Vite + React single-page application that helps local
 ## Features
 
 - Google sign-in via Firebase Authentication.
-- Group management to organize your teams or communities.
-- Group owners can add any registered player to their rosters.
-- Game scheduling form that attaches games to groups.
+- Any signed-in player can create a game that everyone can join.
+- Players can join or leave games and see the roster update instantly.
+- Game scheduling form that tracks kickoff time and location.
 - Live views for available games and the games you have already joined.
 - Tailwind CSS design system with dark theme styling.
 
-Every time a player signs in, the app stores or updates a profile document in the `players` collection. Group owners can pick from this directory when they need to add someone to their roster.
+Every time a player signs in, the app stores or updates a profile document in the `players` collection. This keeps basic contact details handy for future extensions like messaging or attendance tracking.
 
 ## Project structure
 
@@ -49,14 +49,13 @@ The React application lives in the [`app`](./app) directory:
 - `src/firebase/config.js` – Firebase initialization.
 - `src/firebase/players.js` – Helper to store player profiles in Firestore.
 - `src/context/AuthContext.jsx` – Authentication context for the app.
-- `src/hooks/useGroups.js` and `src/hooks/useGames.js` – Firestore data hooks.
-- `src/hooks/usePlayers.js` – Hook that exposes the directory of registered players.
-- `src/components/` – Layout, group, and game UI components.
-- `src/pages/` – Route-level pages for login, dashboard, groups, and games.
+- `src/hooks/useGames.js` – Firestore data hook for games.
+- `src/components/` – Layout and game UI components.
+- `src/pages/` – Route-level pages for login, dashboard, and games.
 
 ## Firebase configuration
 
-This project includes a hardened set of Firestore security rules that allow authenticated players to create groups and games while preventing them from editing other users' data. After updating the environment variables you can deploy the rules to your Firebase project:
+This project includes a hardened set of Firestore security rules that allow authenticated players to create games while preventing them from editing other users' data. After updating the environment variables you can deploy the rules to your Firebase project:
 
 ```bash
 firebase deploy --only firestore:rules
@@ -64,8 +63,7 @@ firebase deploy --only firestore:rules
 
 The rules live in [`firestore.rules`](./firestore.rules) and cover the following scenarios:
 
-- Groups can be read by anyone, but only signed-in users can create a group. The creator is automatically registered as the owner and first member. Other signed-in users can add themselves to a group, and owners can add any registered player to their `members` list.
-- Games can be read by anyone, but only signed-in users can create a game. The creator is stored as the owner and is automatically the first entry in the `participants` list. Other signed-in users can only update a game by adding themselves as participants.
+- Games can be read by anyone, but only signed-in users can create a game. The creator is stored as the organizer and is automatically the first entry in the `participants` list. Other signed-in users can add or remove themselves as participants.
 - Signed-in users can read the `players` directory. Each user can create or update only their own profile document.
 
 Feel free to customize the UI, expand the data model, or add additional Firebase functionality to suit your league.

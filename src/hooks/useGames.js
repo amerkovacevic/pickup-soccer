@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Timestamp,
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
   doc,
@@ -45,19 +46,9 @@ export const useGames = () => {
   }, []);
 
   const createGame = useCallback(
-    async ({
-      title,
-      location,
-      startTime,
-      groupId,
-      groupName,
-    }) => {
+    async ({ title, location, startTime }) => {
       if (!user) {
         throw new Error('You must be signed in to create a game.');
-      }
-
-      if (!groupId) {
-        throw new Error('Select a group before creating a game.');
       }
 
       setError(null);
@@ -65,8 +56,6 @@ export const useGames = () => {
       await addDoc(gamesRef, {
         title,
         location,
-        groupId,
-        groupName,
         startTime: Timestamp.fromDate(new Date(startTime)),
         createdAt: serverTimestamp(),
         createdBy: user.uid,
@@ -102,6 +91,28 @@ export const useGames = () => {
     [user],
   );
 
+  const leaveGame = useCallback(
+    async (gameId) => {
+      if (!user) {
+        throw new Error('You must be signed in to leave a game.');
+      }
+
+      const game = games.find((item) => item.id === gameId);
+      const participant = game?.participants?.find((entry) => entry.uid === user.uid);
+
+      if (!participant) {
+        throw new Error('You are not part of this game.');
+      }
+
+      setError(null);
+      const gameRef = doc(db, 'games', gameId);
+      await updateDoc(gameRef, {
+        participants: arrayRemove(participant),
+      });
+    },
+    [games, user],
+  );
+
   const availableGames = useMemo(() => {
     if (!user) {
       return games;
@@ -128,5 +139,6 @@ export const useGames = () => {
     error,
     createGame,
     joinGame,
+    leaveGame,
   };
 };
