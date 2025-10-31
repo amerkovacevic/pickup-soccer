@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   addDoc,
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase/config.js';
 import { useAuth } from './useAuth.js';
@@ -44,15 +46,35 @@ export const useGroups = () => {
       }
 
       setError(null);
-      const groupsRef = collection(db, 'groups');
-      await addDoc(groupsRef, {
-        name,
-        description,
-        ownerId: user.uid,
-        ownerName: user.displayName,
-        members: [user.uid],
-        createdAt: serverTimestamp(),
-      });
+      try {
+        const userRef = doc(db, 'users', user.uid);
+
+        await setDoc(
+          userRef,
+          {
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            lastLoginAt: serverTimestamp(),
+          },
+          { merge: true },
+        );
+
+        const groupsRef = collection(db, 'groups');
+        await addDoc(groupsRef, {
+          name,
+          description,
+          ownerId: user.uid,
+          ownerName: user.displayName,
+          members: [user.uid],
+          createdAt: serverTimestamp(),
+        });
+      } catch (err) {
+        console.error('Failed to create group', err);
+        setError(err.message);
+        throw err;
+      }
     },
     [user],
   );
