@@ -5,6 +5,52 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function participantUids(participants) {
+      return participants.map(participant, participant.uid);
+    }
+
+    function addedParticipantUids(existingParticipants, newParticipants) {
+      let newUids = participantUids(newParticipants);
+      let existingUids = participantUids(existingParticipants);
+      return newUids.where(uid, !existingUids.hasAny([uid]));
+    }
+
+    function removedParticipantUids(existingParticipants, newParticipants) {
+      let newUids = participantUids(newParticipants);
+      let existingUids = participantUids(existingParticipants);
+      return existingUids.where(uid, !newUids.hasAny([uid]));
+    }
+
+    function participantsUnchangedExcept(existingParticipants, newParticipants, uid) {
+      return existingParticipants.every(participant,
+          participant.uid == uid || newParticipants.hasAny([participant]))
+        && newParticipants.every(participant,
+          participant.uid == uid || existingParticipants.hasAny([participant]));
+    }
+
+    function isJoin(existingParticipants, newParticipants) {
+      let addedUids = addedParticipantUids(existingParticipants, newParticipants);
+      let removedUids = removedParticipantUids(existingParticipants, newParticipants);
+      return addedUids.size() == 1
+        && addedUids[0] == request.auth.uid
+        && removedUids.size() == 0
+        && participantsUnchangedExcept(existingParticipants, newParticipants, request.auth.uid);
+    }
+
+    function isLeave(existingParticipants, newParticipants) {
+      let addedUids = addedParticipantUids(existingParticipants, newParticipants);
+      let removedUids = removedParticipantUids(existingParticipants, newParticipants);
+      return addedUids.size() == 0
+        && removedUids.size() == 1
+        && removedUids[0] == request.auth.uid
+        && participantsUnchangedExcept(existingParticipants, newParticipants, request.auth.uid);
+    }
+
+    function isParticipantUpdateAllowed(existingParticipants, newParticipants) {
+      return isJoin(existingParticipants, newParticipants)
+        || isLeave(existingParticipants, newParticipants);
+    }
+
     match /games/{gameId} {
       allow read: if true;
 
@@ -18,32 +64,7 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).changedKeys().hasOnly(['participants'])
         && request.resource.data.participants is list
         && resource.data.participants is list
-        && (
-          let newParticipants = request.resource.data.participants;
-          let existingParticipants = resource.data.participants;
-          let newParticipantUids = newParticipants.map(participant, participant.uid);
-          let existingParticipantUids = existingParticipants.map(participant, participant.uid);
-          let addedUids = newParticipantUids.where(uid, !existingParticipantUids.hasAny([uid]));
-          let removedUids = existingParticipantUids.where(uid, !newParticipantUids.hasAny([uid]));
-          (
-            // Joining a game by adding yourself to the participants list.
-            addedUids.size() == 1
-            && addedUids[0] == request.auth.uid
-            && removedUids.size() == 0
-            && existingParticipants.every(participant, newParticipants.hasAny([participant]))
-            && newParticipants.every(participant,
-              existingParticipants.hasAny([participant]) || participant.uid == request.auth.uid)
-          )
-          || (
-            // Leaving a game by removing yourself from the participants list.
-            addedUids.size() == 0
-            && removedUids.size() == 1
-            && removedUids[0] == request.auth.uid
-            && newParticipants.every(participant, existingParticipants.hasAny([participant]))
-            && existingParticipants.every(participant,
-              newParticipants.hasAny([participant]) || participant.uid == request.auth.uid)
-          )
-        );
+        && isParticipantUpdateAllowed(resource.data.participants, request.resource.data.participants);
     }
 
     match /players/{playerId} {
