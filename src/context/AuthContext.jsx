@@ -1,14 +1,17 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { auth, db, googleProvider } from '../firebase/config.js';
+import {
+  observeAuthState,
+  signInWithGoogle as signInWithGoogleService,
+  signOutCurrentUser,
+  syncUserProfile,
+} from '../services/authService.js';
 
 const AuthContext = createContext({
   user: null,
   loading: true,
+  error: null,
   signInWithGoogle: async () => {},
   signOutUser: async () => {},
-  error: null,
 });
 
 export const AuthProvider = ({ children }) => {
@@ -17,35 +20,16 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribe = observeAuthState(async (firebaseUser) => {
+      setLoading(true);
+      setError(null);
+
       if (firebaseUser) {
         try {
-          const userRef = doc(db, 'users', firebaseUser.uid);
-          const snapshot = await getDoc(userRef);
-
-          if (snapshot.exists()) {
-            await setDoc(
-              userRef,
-              {
-                displayName: firebaseUser.displayName ?? '',
-                email: firebaseUser.email ?? '',
-                photoURL: firebaseUser.photoURL ?? '',
-                lastLoginAt: serverTimestamp(),
-              },
-              { merge: true },
-            );
-          } else {
-            await setDoc(userRef, {
-              uid: firebaseUser.uid,
-              displayName: firebaseUser.displayName ?? '',
-              email: firebaseUser.email ?? '',
-              photoURL: firebaseUser.photoURL ?? '',
-              createdAt: serverTimestamp(),
-              lastLoginAt: serverTimestamp(),
-            });
-          }
-        } catch (err) {
-          console.error('Failed to sync user profile', err);
+          await syncUserProfile(firebaseUser);
+        } catch (syncError) {
+          console.error('Failed to sync user profile with Firestore', syncError);
+          setError('Unable to update your profile information.');
         }
       }
 
@@ -56,23 +40,25 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  const signInWithGoogle = async () => {
+  const handleSignInWithGoogle = async () => {
     setError(null);
+
     try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (err) {
-      console.error('Google sign-in failed', err);
-      setError(err.message);
+      await signInWithGoogleService();
+    } catch (signInError) {
+      console.error('Google sign-in failed', signInError);
+      setError('Sign in was unsuccessful. Please try again.');
     }
   };
 
-  const signOutUser = async () => {
+  const handleSignOutUser = async () => {
     setError(null);
+
     try {
-      await signOut(auth);
-    } catch (err) {
-      console.error('Sign out failed', err);
-      setError(err.message);
+      await signOutCurrentUser();
+    } catch (signOutError) {
+      console.error('Sign out failed', signOutError);
+      setError('Sign out was unsuccessful. Please try again.');
     }
   };
 
@@ -81,8 +67,8 @@ export const AuthProvider = ({ children }) => {
       user,
       loading,
       error,
-      signInWithGoogle,
-      signOutUser,
+      signInWithGoogle: handleSignInWithGoogle,
+      signOutUser: handleSignOutUser,
     }),
     [user, loading, error],
   );

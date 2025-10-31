@@ -1,18 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Timestamp,
-  addDoc,
-  arrayUnion,
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  updateDoc,
-} from 'firebase/firestore';
-import { db } from '../firebase/config.js';
 import { useAuth } from './useAuth.js';
+import {
+  createGameRecord,
+  joinGameById,
+  subscribeToGames,
+} from '../services/gamesService.js';
 
 export const useGames = () => {
   const { user } = useAuth();
@@ -21,22 +13,14 @@ export const useGames = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const gamesRef = collection(db, 'games');
-    const gamesQuery = query(gamesRef, orderBy('startTime', 'asc'));
-
-    const unsubscribe = onSnapshot(
-      gamesQuery,
-      (snapshot) => {
-        const data = snapshot.docs.map((docSnap) => ({
-          id: docSnap.id,
-          ...docSnap.data(),
-        }));
-        setGames(data);
+    const unsubscribe = subscribeToGames(
+      (fetchedGames) => {
+        setGames(fetchedGames);
         setLoading(false);
       },
-      (err) => {
-        console.error('Failed to fetch games', err);
-        setError(err.message);
+      (subscriptionError) => {
+        console.error('Failed to fetch games', subscriptionError);
+        setError('Unable to load games at this time.');
         setLoading(false);
       },
     );
@@ -45,40 +29,13 @@ export const useGames = () => {
   }, []);
 
   const createGame = useCallback(
-    async ({
-      title,
-      location,
-      startTime,
-      groupId,
-      groupName,
-    }) => {
+    async ({ title, location, startTime, groupId, groupName }) => {
       if (!user) {
         throw new Error('You must be signed in to create a game.');
       }
 
-      if (!groupId) {
-        throw new Error('Select a group before creating a game.');
-      }
-
       setError(null);
-      const gamesRef = collection(db, 'games');
-      await addDoc(gamesRef, {
-        title,
-        location,
-        groupId,
-        groupName,
-        startTime: Timestamp.fromDate(new Date(startTime)),
-        createdAt: serverTimestamp(),
-        createdBy: user.uid,
-        createdByName: user.displayName,
-        participants: [
-          {
-            uid: user.uid,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-          },
-        ],
-      });
+      await createGameRecord(user, { title, location, startTime, groupId, groupName });
     },
     [user],
   );
@@ -89,25 +46,28 @@ export const useGames = () => {
         throw new Error('You must be signed in to join a game.');
       }
 
+      const targetGame = games.find((game) => game.id === gameId);
+      if (targetGame && (targetGame.participants ?? []).some((participant) => participant.uid === user.uid)) {
+        throw new Error('You have already joined this game.');
+      }
+
       setError(null);
-      const gameRef = doc(db, 'games', gameId);
-      await updateDoc(gameRef, {
-        participants: arrayUnion({
-          uid: user.uid,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-        }),
+      await joinGameById(gameId, {
+        uid: user.uid,
+        displayName: user.displayName ?? '',
+        photoURL: user.photoURL ?? '',
       });
     },
-    [user],
+    [games, user],
   );
 
   const availableGames = useMemo(() => {
     if (!user) {
       return games;
     }
-    return games.filter((game) =>
-      !(game.participants ?? []).some((participant) => participant.uid === user.uid),
+
+    return games.filter(
+      (game) => !(game.participants ?? []).some((participant) => participant.uid === user.uid),
     );
   }, [games, user]);
 
@@ -115,6 +75,7 @@ export const useGames = () => {
     if (!user) {
       return [];
     }
+
     return games.filter((game) =>
       (game.participants ?? []).some((participant) => participant.uid === user.uid),
     );

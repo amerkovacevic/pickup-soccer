@@ -1,19 +1,35 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getApp, getApps, initializeApp } from 'firebase/app';
+import {
+  browserLocalPersistence,
+  getAuth,
+  GoogleAuthProvider,
+  setPersistence,
+} from 'firebase/auth';
+import { getFirestore, initializeFirestore } from 'firebase/firestore';
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+const ENV_KEYS = {
+  apiKey: 'VITE_FIREBASE_API_KEY',
+  authDomain: 'VITE_FIREBASE_AUTH_DOMAIN',
+  projectId: 'VITE_FIREBASE_PROJECT_ID',
+  storageBucket: 'VITE_FIREBASE_STORAGE_BUCKET',
+  messagingSenderId: 'VITE_FIREBASE_MESSAGING_SENDER_ID',
+  appId: 'VITE_FIREBASE_APP_ID',
+  measurementId: 'VITE_FIREBASE_MEASUREMENT_ID',
 };
 
-const missingKeys = Object.entries(firebaseConfig)
-  .filter(([, value]) => !value)
-  .map(([key]) => key);
+const firebaseConfig = Object.entries(ENV_KEYS).reduce((config, [configKey, envKey]) => {
+  const value = import.meta.env[envKey];
+
+  if (value) {
+    config[configKey] = value;
+  }
+
+  return config;
+}, {});
+
+const missingKeys = Object.entries(ENV_KEYS)
+  .filter(([, envKey]) => !import.meta.env[envKey])
+  .map(([, envKey]) => envKey);
 
 if (missingKeys.length) {
   console.warn(
@@ -22,8 +38,22 @@ if (missingKeys.length) {
   );
 }
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export const db = getFirestore(app);
+const auth = getAuth(app);
+void setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.warn('Failed to configure Firebase auth persistence', error);
+});
+
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+let db;
+try {
+  db = initializeFirestore(app, { ignoreUndefinedProperties: true });
+} catch (error) {
+  console.warn('Falling back to default Firestore instance', error);
+  db = getFirestore(app);
+}
+
+export { app, auth, db, googleProvider };

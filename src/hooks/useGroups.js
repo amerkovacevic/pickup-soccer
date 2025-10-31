@@ -1,17 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  updateDoc,
-} from 'firebase/firestore';
-import { db } from '../firebase/config.js';
 import { useAuth } from './useAuth.js';
+import {
+  createGroupRecord,
+  joinGroupById,
+  subscribeToGroups,
+} from '../services/groupsService.js';
 
 export const useGroups = () => {
   const { user } = useAuth();
@@ -20,19 +13,14 @@ export const useGroups = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const groupsRef = collection(db, 'groups');
-    const groupsQuery = query(groupsRef, orderBy('createdAt', 'desc'));
-
-    const unsubscribe = onSnapshot(
-      groupsQuery,
-      (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAllGroups(data);
+    const unsubscribe = subscribeToGroups(
+      (groups) => {
+        setAllGroups(groups);
         setLoading(false);
       },
-      (err) => {
-        console.error('Failed to fetch groups', err);
-        setError(err.message);
+      (subscriptionError) => {
+        console.error('Failed to fetch groups', subscriptionError);
+        setError('Unable to load groups at this time.');
         setLoading(false);
       },
     );
@@ -47,18 +35,26 @@ export const useGroups = () => {
       }
 
       setError(null);
-      const groupsRef = collection(db, 'groups');
-      await addDoc(groupsRef, {
-        name,
-        description,
-        ownerId: user.uid,
-        ownerName: user.displayName,
-        ownerEmail: user.email,
-        members: [user.uid],
-        createdAt: serverTimestamp(),
-      });
+      await createGroupRecord(user, { name, description });
     },
     [user],
+  );
+
+  const joinGroup = useCallback(
+    async (groupId) => {
+      if (!user) {
+        throw new Error('You must be signed in to join a group.');
+      }
+
+      const targetGroup = allGroups.find((group) => group.id === groupId);
+      if (targetGroup && (targetGroup.members ?? []).includes(user.uid)) {
+        throw new Error('You are already a member of this group.');
+      }
+
+      setError(null);
+      await joinGroupById(groupId, user.uid);
+    },
+    [allGroups, user],
   );
 
   const userGroups = useMemo(() => {
@@ -77,25 +73,12 @@ export const useGroups = () => {
     return allGroups.filter((group) => !(group.members ?? []).includes(user.uid));
   }, [allGroups, user]);
 
-  const joinGroup = useCallback(
-    async (groupId) => {
-      if (!user) {
-        throw new Error('You must be signed in to join a group.');
-      }
-
-      const group = allGroups.find((item) => item.id === groupId);
-      if (group && (group.members ?? []).includes(user.uid)) {
-        throw new Error('You are already a member of this group.');
-      }
-
-      setError(null);
-      const groupRef = doc(db, 'groups', groupId);
-      await updateDoc(groupRef, {
-        members: arrayUnion(user.uid),
-      });
-    },
-    [allGroups, user],
-  );
-
-  return { groups: userGroups, discoverableGroups, loading, error, createGroup, joinGroup };
+  return {
+    groups: userGroups,
+    discoverableGroups,
+    loading,
+    error,
+    createGroup,
+    joinGroup,
+  };
 };
