@@ -6,3 +6,4 @@ app/dist
 npm-debug.log*
 .env
 .env.local
+.firebase
