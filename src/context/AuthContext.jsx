@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase/config.js';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { auth, db, googleProvider } from '../firebase/config.js';
 
 const AuthContext = createContext({
   user: null,
@@ -16,9 +17,29 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
+
+      if (firebaseUser) {
+        try {
+          setError(null);
+          await setDoc(
+            doc(db, 'users', firebaseUser.uid),
+            {
+              uid: firebaseUser.uid,
+              displayName: firebaseUser.displayName,
+              email: firebaseUser.email,
+              photoURL: firebaseUser.photoURL,
+              lastLoginAt: serverTimestamp(),
+            },
+            { merge: true },
+          );
+        } catch (err) {
+          console.error('Failed to sync user profile', err);
+          setError(err.message);
+        }
+      }
     });
 
     return unsubscribe;

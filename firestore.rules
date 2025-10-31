@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userProfileExists() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    match /groups/{groupId} {
+      allow read: if true;
+      allow create: if userProfileExists() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if userProfileExists() && request.auth.uid == resource.data.ownerId;
+    }
+
+    match /games/{gameId} {
+      allow read: if true;
+      allow create: if userProfileExists() && request.resource.data.createdBy == request.auth.uid;
+      allow update: if userProfileExists() && (
+        request.auth.uid == resource.data.createdBy ||
+        (
+          resource.data.diff(request.resource.data).changedKeys().hasOnly(['participants']) &&
+          request.resource.data.participants.size() == resource.data.participants.size() + 1 &&
+          request.resource.data.participants[resource.data.participants.size()].uid == request.auth.uid
+        ) ||
+        resource.data == request.resource.data
+      );
+      allow delete: if userProfileExists() && request.auth.uid == resource.data.createdBy;
+    }
+  }
+}
