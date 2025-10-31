@@ -6,45 +6,720 @@ service cloud.firestore {
     }
 
     function participantExists(participants, uid) {
-      return participantExistsAtIndex(participants, uid, 0);
+      return
+        (participants.size() > 0 && participants[0].uid == uid) ||
+        (participants.size() > 1 && participants[1].uid == uid) ||
+        (participants.size() > 2 && participants[2].uid == uid) ||
+        (participants.size() > 3 && participants[3].uid == uid) ||
+        (participants.size() > 4 && participants[4].uid == uid) ||
+        (participants.size() > 5 && participants[5].uid == uid) ||
+        (participants.size() > 6 && participants[6].uid == uid) ||
+        (participants.size() > 7 && participants[7].uid == uid) ||
+        (participants.size() > 8 && participants[8].uid == uid) ||
+        (participants.size() > 9 && participants[9].uid == uid) ||
+        (participants.size() > 10 && participants[10].uid == uid) ||
+        (participants.size() > 11 && participants[11].uid == uid) ||
+        (participants.size() > 12 && participants[12].uid == uid) ||
+        (participants.size() > 13 && participants[13].uid == uid) ||
+        (participants.size() > 14 && participants[14].uid == uid) ||
+        (participants.size() > 15 && participants[15].uid == uid) ||
+        (participants.size() > 16 && participants[16].uid == uid) ||
+        (participants.size() > 17 && participants[17].uid == uid) ||
+        (participants.size() > 18 && participants[18].uid == uid) ||
+        (participants.size() > 19 && participants[19].uid == uid) ||
+        (participants.size() > 20 && participants[20].uid == uid) ||
+        (participants.size() > 21 && participants[21].uid == uid) ||
+        false;
     }
 
-    function participantExistsAtIndex(participants, uid, index) {
-      return index >= participants.size()
-        ? false
-        : participants[index].uid == uid
-          ? true
-          : participantExistsAtIndex(participants, uid, index + 1);
+    function participantsWithinLimit(participants) {
+      return participants.size() <= 22;
     }
 
-    function participantsMatchWithoutUid(longerList, shorterList, uid) {
-      return participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, 0, 0, false);
+    function participantsPrefixUnchanged(existingParticipants, newParticipants) {
+      return
+        (!(existingParticipants.size() > 0) || (newParticipants.size() > 0 && existingParticipants[0] == newParticipants[0])) &&
+        (!(existingParticipants.size() > 1) || (newParticipants.size() > 1 && existingParticipants[1] == newParticipants[1])) &&
+        (!(existingParticipants.size() > 2) || (newParticipants.size() > 2 && existingParticipants[2] == newParticipants[2])) &&
+        (!(existingParticipants.size() > 3) || (newParticipants.size() > 3 && existingParticipants[3] == newParticipants[3])) &&
+        (!(existingParticipants.size() > 4) || (newParticipants.size() > 4 && existingParticipants[4] == newParticipants[4])) &&
+        (!(existingParticipants.size() > 5) || (newParticipants.size() > 5 && existingParticipants[5] == newParticipants[5])) &&
+        (!(existingParticipants.size() > 6) || (newParticipants.size() > 6 && existingParticipants[6] == newParticipants[6])) &&
+        (!(existingParticipants.size() > 7) || (newParticipants.size() > 7 && existingParticipants[7] == newParticipants[7])) &&
+        (!(existingParticipants.size() > 8) || (newParticipants.size() > 8 && existingParticipants[8] == newParticipants[8])) &&
+        (!(existingParticipants.size() > 9) || (newParticipants.size() > 9 && existingParticipants[9] == newParticipants[9])) &&
+        (!(existingParticipants.size() > 10) || (newParticipants.size() > 10 && existingParticipants[10] == newParticipants[10])) &&
+        (!(existingParticipants.size() > 11) || (newParticipants.size() > 11 && existingParticipants[11] == newParticipants[11])) &&
+        (!(existingParticipants.size() > 12) || (newParticipants.size() > 12 && existingParticipants[12] == newParticipants[12])) &&
+        (!(existingParticipants.size() > 13) || (newParticipants.size() > 13 && existingParticipants[13] == newParticipants[13])) &&
+        (!(existingParticipants.size() > 14) || (newParticipants.size() > 14 && existingParticipants[14] == newParticipants[14])) &&
+        (!(existingParticipants.size() > 15) || (newParticipants.size() > 15 && existingParticipants[15] == newParticipants[15])) &&
+        (!(existingParticipants.size() > 16) || (newParticipants.size() > 16 && existingParticipants[16] == newParticipants[16])) &&
+        (!(existingParticipants.size() > 17) || (newParticipants.size() > 17 && existingParticipants[17] == newParticipants[17])) &&
+        (!(existingParticipants.size() > 18) || (newParticipants.size() > 18 && existingParticipants[18] == newParticipants[18])) &&
+        (!(existingParticipants.size() > 19) || (newParticipants.size() > 19 && existingParticipants[19] == newParticipants[19])) &&
+        (!(existingParticipants.size() > 20) || (newParticipants.size() > 20 && existingParticipants[20] == newParticipants[20])) &&
+        (!(existingParticipants.size() > 21) || (newParticipants.size() > 21 && existingParticipants[21] == newParticipants[21])) &&
+        true;
     }
 
-    function participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex, shortIndex, skipped) {
-      return longIndex >= longerList.size()
-        ? shortIndex >= shorterList.size() && skipped
-        : !skipped && longerList[longIndex].uid == uid
-          ? participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex + 1, shortIndex, true)
-          : shortIndex >= shorterList.size()
-            ? false
-            : longerList[longIndex] != shorterList[shortIndex]
-              ? false
-              : participantsMatchWithoutUidAtIndex(longerList, shorterList, uid, longIndex + 1, shortIndex + 1, skipped);
+    function leaveMatchesAt0(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 0 &&
+        existingParticipants[0].uid == request.auth.uid &&
+        (!(newParticipants.size() > 0) || (existingParticipants.size() > 1 && newParticipants[0] == existingParticipants[1])) &&
+        (!(newParticipants.size() > 1) || (existingParticipants.size() > 2 && newParticipants[1] == existingParticipants[2])) &&
+        (!(newParticipants.size() > 2) || (existingParticipants.size() > 3 && newParticipants[2] == existingParticipants[3])) &&
+        (!(newParticipants.size() > 3) || (existingParticipants.size() > 4 && newParticipants[3] == existingParticipants[4])) &&
+        (!(newParticipants.size() > 4) || (existingParticipants.size() > 5 && newParticipants[4] == existingParticipants[5])) &&
+        (!(newParticipants.size() > 5) || (existingParticipants.size() > 6 && newParticipants[5] == existingParticipants[6])) &&
+        (!(newParticipants.size() > 6) || (existingParticipants.size() > 7 && newParticipants[6] == existingParticipants[7])) &&
+        (!(newParticipants.size() > 7) || (existingParticipants.size() > 8 && newParticipants[7] == existingParticipants[8])) &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt1(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 1 &&
+        existingParticipants[1].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        (!(newParticipants.size() > 1) || (existingParticipants.size() > 2 && newParticipants[1] == existingParticipants[2])) &&
+        (!(newParticipants.size() > 2) || (existingParticipants.size() > 3 && newParticipants[2] == existingParticipants[3])) &&
+        (!(newParticipants.size() > 3) || (existingParticipants.size() > 4 && newParticipants[3] == existingParticipants[4])) &&
+        (!(newParticipants.size() > 4) || (existingParticipants.size() > 5 && newParticipants[4] == existingParticipants[5])) &&
+        (!(newParticipants.size() > 5) || (existingParticipants.size() > 6 && newParticipants[5] == existingParticipants[6])) &&
+        (!(newParticipants.size() > 6) || (existingParticipants.size() > 7 && newParticipants[6] == existingParticipants[7])) &&
+        (!(newParticipants.size() > 7) || (existingParticipants.size() > 8 && newParticipants[7] == existingParticipants[8])) &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt2(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 2 &&
+        existingParticipants[2].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        (!(newParticipants.size() > 2) || (existingParticipants.size() > 3 && newParticipants[2] == existingParticipants[3])) &&
+        (!(newParticipants.size() > 3) || (existingParticipants.size() > 4 && newParticipants[3] == existingParticipants[4])) &&
+        (!(newParticipants.size() > 4) || (existingParticipants.size() > 5 && newParticipants[4] == existingParticipants[5])) &&
+        (!(newParticipants.size() > 5) || (existingParticipants.size() > 6 && newParticipants[5] == existingParticipants[6])) &&
+        (!(newParticipants.size() > 6) || (existingParticipants.size() > 7 && newParticipants[6] == existingParticipants[7])) &&
+        (!(newParticipants.size() > 7) || (existingParticipants.size() > 8 && newParticipants[7] == existingParticipants[8])) &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt3(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 3 &&
+        existingParticipants[3].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        (!(newParticipants.size() > 3) || (existingParticipants.size() > 4 && newParticipants[3] == existingParticipants[4])) &&
+        (!(newParticipants.size() > 4) || (existingParticipants.size() > 5 && newParticipants[4] == existingParticipants[5])) &&
+        (!(newParticipants.size() > 5) || (existingParticipants.size() > 6 && newParticipants[5] == existingParticipants[6])) &&
+        (!(newParticipants.size() > 6) || (existingParticipants.size() > 7 && newParticipants[6] == existingParticipants[7])) &&
+        (!(newParticipants.size() > 7) || (existingParticipants.size() > 8 && newParticipants[7] == existingParticipants[8])) &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt4(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 4 &&
+        existingParticipants[4].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        (!(newParticipants.size() > 4) || (existingParticipants.size() > 5 && newParticipants[4] == existingParticipants[5])) &&
+        (!(newParticipants.size() > 5) || (existingParticipants.size() > 6 && newParticipants[5] == existingParticipants[6])) &&
+        (!(newParticipants.size() > 6) || (existingParticipants.size() > 7 && newParticipants[6] == existingParticipants[7])) &&
+        (!(newParticipants.size() > 7) || (existingParticipants.size() > 8 && newParticipants[7] == existingParticipants[8])) &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt5(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 5 &&
+        existingParticipants[5].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        (!(newParticipants.size() > 5) || (existingParticipants.size() > 6 && newParticipants[5] == existingParticipants[6])) &&
+        (!(newParticipants.size() > 6) || (existingParticipants.size() > 7 && newParticipants[6] == existingParticipants[7])) &&
+        (!(newParticipants.size() > 7) || (existingParticipants.size() > 8 && newParticipants[7] == existingParticipants[8])) &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt6(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 6 &&
+        existingParticipants[6].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        (!(newParticipants.size() > 6) || (existingParticipants.size() > 7 && newParticipants[6] == existingParticipants[7])) &&
+        (!(newParticipants.size() > 7) || (existingParticipants.size() > 8 && newParticipants[7] == existingParticipants[8])) &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt7(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 7 &&
+        existingParticipants[7].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        (!(newParticipants.size() > 7) || (existingParticipants.size() > 8 && newParticipants[7] == existingParticipants[8])) &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt8(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 8 &&
+        existingParticipants[8].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        (!(newParticipants.size() > 8) || (existingParticipants.size() > 9 && newParticipants[8] == existingParticipants[9])) &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt9(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 9 &&
+        existingParticipants[9].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        (!(newParticipants.size() > 9) || (existingParticipants.size() > 10 && newParticipants[9] == existingParticipants[10])) &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt10(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 10 &&
+        existingParticipants[10].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        (!(newParticipants.size() > 10) || (existingParticipants.size() > 11 && newParticipants[10] == existingParticipants[11])) &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt11(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 11 &&
+        existingParticipants[11].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        (!(newParticipants.size() > 11) || (existingParticipants.size() > 12 && newParticipants[11] == existingParticipants[12])) &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt12(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 12 &&
+        existingParticipants[12].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        (!(newParticipants.size() > 12) || (existingParticipants.size() > 13 && newParticipants[12] == existingParticipants[13])) &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt13(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 13 &&
+        existingParticipants[13].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        (!(newParticipants.size() > 13) || (existingParticipants.size() > 14 && newParticipants[13] == existingParticipants[14])) &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt14(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 14 &&
+        existingParticipants[14].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        newParticipants.size() > 13 && existingParticipants.size() > 13 && newParticipants[13] == existingParticipants[13] &&
+        (!(newParticipants.size() > 14) || (existingParticipants.size() > 15 && newParticipants[14] == existingParticipants[15])) &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt15(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 15 &&
+        existingParticipants[15].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        newParticipants.size() > 13 && existingParticipants.size() > 13 && newParticipants[13] == existingParticipants[13] &&
+        newParticipants.size() > 14 && existingParticipants.size() > 14 && newParticipants[14] == existingParticipants[14] &&
+        (!(newParticipants.size() > 15) || (existingParticipants.size() > 16 && newParticipants[15] == existingParticipants[16])) &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt16(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 16 &&
+        existingParticipants[16].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        newParticipants.size() > 13 && existingParticipants.size() > 13 && newParticipants[13] == existingParticipants[13] &&
+        newParticipants.size() > 14 && existingParticipants.size() > 14 && newParticipants[14] == existingParticipants[14] &&
+        newParticipants.size() > 15 && existingParticipants.size() > 15 && newParticipants[15] == existingParticipants[15] &&
+        (!(newParticipants.size() > 16) || (existingParticipants.size() > 17 && newParticipants[16] == existingParticipants[17])) &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt17(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 17 &&
+        existingParticipants[17].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        newParticipants.size() > 13 && existingParticipants.size() > 13 && newParticipants[13] == existingParticipants[13] &&
+        newParticipants.size() > 14 && existingParticipants.size() > 14 && newParticipants[14] == existingParticipants[14] &&
+        newParticipants.size() > 15 && existingParticipants.size() > 15 && newParticipants[15] == existingParticipants[15] &&
+        newParticipants.size() > 16 && existingParticipants.size() > 16 && newParticipants[16] == existingParticipants[16] &&
+        (!(newParticipants.size() > 17) || (existingParticipants.size() > 18 && newParticipants[17] == existingParticipants[18])) &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt18(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 18 &&
+        existingParticipants[18].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        newParticipants.size() > 13 && existingParticipants.size() > 13 && newParticipants[13] == existingParticipants[13] &&
+        newParticipants.size() > 14 && existingParticipants.size() > 14 && newParticipants[14] == existingParticipants[14] &&
+        newParticipants.size() > 15 && existingParticipants.size() > 15 && newParticipants[15] == existingParticipants[15] &&
+        newParticipants.size() > 16 && existingParticipants.size() > 16 && newParticipants[16] == existingParticipants[16] &&
+        newParticipants.size() > 17 && existingParticipants.size() > 17 && newParticipants[17] == existingParticipants[17] &&
+        (!(newParticipants.size() > 18) || (existingParticipants.size() > 19 && newParticipants[18] == existingParticipants[19])) &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt19(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 19 &&
+        existingParticipants[19].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        newParticipants.size() > 13 && existingParticipants.size() > 13 && newParticipants[13] == existingParticipants[13] &&
+        newParticipants.size() > 14 && existingParticipants.size() > 14 && newParticipants[14] == existingParticipants[14] &&
+        newParticipants.size() > 15 && existingParticipants.size() > 15 && newParticipants[15] == existingParticipants[15] &&
+        newParticipants.size() > 16 && existingParticipants.size() > 16 && newParticipants[16] == existingParticipants[16] &&
+        newParticipants.size() > 17 && existingParticipants.size() > 17 && newParticipants[17] == existingParticipants[17] &&
+        newParticipants.size() > 18 && existingParticipants.size() > 18 && newParticipants[18] == existingParticipants[18] &&
+        (!(newParticipants.size() > 19) || (existingParticipants.size() > 20 && newParticipants[19] == existingParticipants[20])) &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt20(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 20 &&
+        existingParticipants[20].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        newParticipants.size() > 13 && existingParticipants.size() > 13 && newParticipants[13] == existingParticipants[13] &&
+        newParticipants.size() > 14 && existingParticipants.size() > 14 && newParticipants[14] == existingParticipants[14] &&
+        newParticipants.size() > 15 && existingParticipants.size() > 15 && newParticipants[15] == existingParticipants[15] &&
+        newParticipants.size() > 16 && existingParticipants.size() > 16 && newParticipants[16] == existingParticipants[16] &&
+        newParticipants.size() > 17 && existingParticipants.size() > 17 && newParticipants[17] == existingParticipants[17] &&
+        newParticipants.size() > 18 && existingParticipants.size() > 18 && newParticipants[18] == existingParticipants[18] &&
+        newParticipants.size() > 19 && existingParticipants.size() > 19 && newParticipants[19] == existingParticipants[19] &&
+        (!(newParticipants.size() > 20) || (existingParticipants.size() > 21 && newParticipants[20] == existingParticipants[21])) &&
+        true;
+    }
+
+    function leaveMatchesAt21(existingParticipants, newParticipants) {
+      return
+        existingParticipants.size() > 21 &&
+        existingParticipants[21].uid == request.auth.uid &&
+        newParticipants.size() > 0 && existingParticipants.size() > 0 && newParticipants[0] == existingParticipants[0] &&
+        newParticipants.size() > 1 && existingParticipants.size() > 1 && newParticipants[1] == existingParticipants[1] &&
+        newParticipants.size() > 2 && existingParticipants.size() > 2 && newParticipants[2] == existingParticipants[2] &&
+        newParticipants.size() > 3 && existingParticipants.size() > 3 && newParticipants[3] == existingParticipants[3] &&
+        newParticipants.size() > 4 && existingParticipants.size() > 4 && newParticipants[4] == existingParticipants[4] &&
+        newParticipants.size() > 5 && existingParticipants.size() > 5 && newParticipants[5] == existingParticipants[5] &&
+        newParticipants.size() > 6 && existingParticipants.size() > 6 && newParticipants[6] == existingParticipants[6] &&
+        newParticipants.size() > 7 && existingParticipants.size() > 7 && newParticipants[7] == existingParticipants[7] &&
+        newParticipants.size() > 8 && existingParticipants.size() > 8 && newParticipants[8] == existingParticipants[8] &&
+        newParticipants.size() > 9 && existingParticipants.size() > 9 && newParticipants[9] == existingParticipants[9] &&
+        newParticipants.size() > 10 && existingParticipants.size() > 10 && newParticipants[10] == existingParticipants[10] &&
+        newParticipants.size() > 11 && existingParticipants.size() > 11 && newParticipants[11] == existingParticipants[11] &&
+        newParticipants.size() > 12 && existingParticipants.size() > 12 && newParticipants[12] == existingParticipants[12] &&
+        newParticipants.size() > 13 && existingParticipants.size() > 13 && newParticipants[13] == existingParticipants[13] &&
+        newParticipants.size() > 14 && existingParticipants.size() > 14 && newParticipants[14] == existingParticipants[14] &&
+        newParticipants.size() > 15 && existingParticipants.size() > 15 && newParticipants[15] == existingParticipants[15] &&
+        newParticipants.size() > 16 && existingParticipants.size() > 16 && newParticipants[16] == existingParticipants[16] &&
+        newParticipants.size() > 17 && existingParticipants.size() > 17 && newParticipants[17] == existingParticipants[17] &&
+        newParticipants.size() > 18 && existingParticipants.size() > 18 && newParticipants[18] == existingParticipants[18] &&
+        newParticipants.size() > 19 && existingParticipants.size() > 19 && newParticipants[19] == existingParticipants[19] &&
+        newParticipants.size() > 20 && existingParticipants.size() > 20 && newParticipants[20] == existingParticipants[20] &&
+        true;
     }
 
     function isJoin(existingParticipants, newParticipants) {
-      return newParticipants.size() == existingParticipants.size() + 1
-        && participantExists(newParticipants, request.auth.uid)
+      return participantsWithinLimit(existingParticipants)
+        && participantsWithinLimit(newParticipants)
+        && newParticipants.size() == existingParticipants.size() + 1
         && !participantExists(existingParticipants, request.auth.uid)
-        && participantsMatchWithoutUid(newParticipants, existingParticipants, request.auth.uid);
+        && participantExists(newParticipants, request.auth.uid)
+        && newParticipants.size() > existingParticipants.size()
+        && newParticipants[existingParticipants.size()].uid == request.auth.uid
+        && participantsPrefixUnchanged(existingParticipants, newParticipants);
     }
 
     function isLeave(existingParticipants, newParticipants) {
-      return existingParticipants.size() == newParticipants.size() + 1
+      return participantsWithinLimit(existingParticipants)
+        && participantsWithinLimit(newParticipants)
+        && existingParticipants.size() == newParticipants.size() + 1
         && participantExists(existingParticipants, request.auth.uid)
         && !participantExists(newParticipants, request.auth.uid)
-        && participantsMatchWithoutUid(existingParticipants, newParticipants, request.auth.uid);
+        && (
+        leaveMatchesAt0(existingParticipants, newParticipants)
+        || leaveMatchesAt1(existingParticipants, newParticipants)
+        || leaveMatchesAt2(existingParticipants, newParticipants)
+        || leaveMatchesAt3(existingParticipants, newParticipants)
+        || leaveMatchesAt4(existingParticipants, newParticipants)
+        || leaveMatchesAt5(existingParticipants, newParticipants)
+        || leaveMatchesAt6(existingParticipants, newParticipants)
+        || leaveMatchesAt7(existingParticipants, newParticipants)
+        || leaveMatchesAt8(existingParticipants, newParticipants)
+        || leaveMatchesAt9(existingParticipants, newParticipants)
+        || leaveMatchesAt10(existingParticipants, newParticipants)
+        || leaveMatchesAt11(existingParticipants, newParticipants)
+        || leaveMatchesAt12(existingParticipants, newParticipants)
+        || leaveMatchesAt13(existingParticipants, newParticipants)
+        || leaveMatchesAt14(existingParticipants, newParticipants)
+        || leaveMatchesAt15(existingParticipants, newParticipants)
+        || leaveMatchesAt16(existingParticipants, newParticipants)
+        || leaveMatchesAt17(existingParticipants, newParticipants)
+        || leaveMatchesAt18(existingParticipants, newParticipants)
+        || leaveMatchesAt19(existingParticipants, newParticipants)
+        || leaveMatchesAt20(existingParticipants, newParticipants)
+        || leaveMatchesAt21(existingParticipants, newParticipants)
+        );
     }
 
     function isParticipantUpdateAllowed(existingParticipants, newParticipants) {
@@ -58,6 +733,7 @@ service cloud.firestore {
       allow create: if isSignedIn()
         && request.resource.data.createdBy == request.auth.uid
         && request.resource.data.participants is list
+        && participantsWithinLimit(request.resource.data.participants)
         && request.resource.data.participants.size() == 1
         && request.resource.data.participants[0].uid == request.auth.uid;
 
@@ -65,6 +741,8 @@ service cloud.firestore {
         && request.writeFields.hasOnly(['participants'])
         && resource.data.participants is list
         && getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants is list
+        && participantsWithinLimit(resource.data.participants)
+        && participantsWithinLimit(getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants)
         && isParticipantUpdateAllowed(
           resource.data.participants,
           getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants
