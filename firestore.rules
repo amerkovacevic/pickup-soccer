@@ -19,19 +19,29 @@ service cloud.firestore {
         && request.resource.data.participants is list
         && resource.data.participants is list
         && (
-          let addedParticipants = request.resource.data.participants.where(participant, !resource.data.participants.hasAny([participant]));
-          let removedParticipants = resource.data.participants.where(participant, !request.resource.data.participants.hasAny([participant]));
+          let newParticipants = request.resource.data.participants;
+          let existingParticipants = resource.data.participants;
+          let newParticipantUids = newParticipants.map(participant, participant.uid);
+          let existingParticipantUids = existingParticipants.map(participant, participant.uid);
+          let addedUids = newParticipantUids.where(uid, !existingParticipantUids.hasAny([uid]));
+          let removedUids = existingParticipantUids.where(uid, !newParticipantUids.hasAny([uid]));
           (
-            request.resource.data.participants.size() == resource.data.participants.size() + 1
-            && addedParticipants.size() == 1
-            && addedParticipants[0].uid == request.auth.uid
-            && removedParticipants.size() == 0
+            // Joining a game by adding yourself to the participants list.
+            addedUids.size() == 1
+            && addedUids[0] == request.auth.uid
+            && removedUids.size() == 0
+            && existingParticipants.every(participant, newParticipants.hasAny([participant]))
+            && newParticipants.every(participant,
+              existingParticipants.hasAny([participant]) || participant.uid == request.auth.uid)
           )
           || (
-            request.resource.data.participants.size() == resource.data.participants.size() - 1
-            && removedParticipants.size() == 1
-            && removedParticipants[0].uid == request.auth.uid
-            && addedParticipants.size() == 0
+            // Leaving a game by removing yourself from the participants list.
+            addedUids.size() == 0
+            && removedUids.size() == 1
+            && removedUids[0] == request.auth.uid
+            && newParticipants.every(participant, existingParticipants.hasAny([participant]))
+            && existingParticipants.every(participant,
+              newParticipants.hasAny([participant]) || participant.uid == request.auth.uid)
           )
         );
     }
