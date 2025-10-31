@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 import { useGames } from '../../hooks/useGames.js';
-import { useGroups } from '../../hooks/useGroups.js';
 
 const formatStartTime = (startTime) => {
   try {
@@ -14,20 +13,13 @@ const formatStartTime = (startTime) => {
 };
 
 const GamesPanel = () => {
-  const { availableGames, joinedGames, loading, error, createGame, joinGame } = useGames();
-  const { groups } = useGroups();
+  const { availableGames, joinedGames, loading, error, createGame, joinGame, leaveGame } = useGames();
   const [formData, setFormData] = useState({
     title: '',
     location: '',
     startTime: '',
-    groupId: '',
   });
   const [status, setStatus] = useState(null);
-
-  const activeGroups = useMemo(
-    () => [...groups].sort((a, b) => a.name.localeCompare(b.name)),
-    [groups],
-  );
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -39,15 +31,12 @@ const GamesPanel = () => {
     setStatus(null);
 
     try {
-      const group = activeGroups.find((item) => item.id === formData.groupId);
       await createGame({
         title: formData.title,
         location: formData.location,
         startTime: formData.startTime,
-        groupId: formData.groupId,
-        groupName: group?.name ?? 'Unknown group',
       });
-      setFormData({ title: '', location: '', startTime: '', groupId: '' });
+      setFormData({ title: '', location: '', startTime: '' });
       setStatus({ type: 'success', message: 'Game created successfully!' });
     } catch (err) {
       setStatus({ type: 'error', message: err.message });
@@ -64,13 +53,23 @@ const GamesPanel = () => {
     }
   };
 
+  const handleLeaveGame = async (gameId) => {
+    setStatus(null);
+    try {
+      await leaveGame(gameId);
+      setStatus({ type: 'success', message: 'You have left the game.' });
+    } catch (err) {
+      setStatus({ type: 'error', message: err.message });
+    }
+  };
+
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl">
         <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-slate-100">Schedule a pickup game</h2>
-            <p className="text-sm text-slate-400">Pick the group, time, and location for your next match.</p>
+            <p className="text-sm text-slate-400">Set the time and place so anyone can join in.</p>
           </div>
           {status && (
             <p
@@ -127,26 +126,6 @@ const GamesPanel = () => {
               required
             />
           </div>
-          <div>
-            <label htmlFor="game-group" className="block text-sm font-medium text-slate-200">
-              Group
-            </label>
-            <select
-              id="game-group"
-              name="groupId"
-              value={formData.groupId}
-              onChange={handleInputChange}
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-pitch-500 focus:outline-none"
-              required
-            >
-              <option value="">Select a group</option>
-              {activeGroups.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.name}
-                </option>
-              ))}
-            </select>
-          </div>
           <div className="md:col-span-2 flex justify-end">
             <button
               type="submit"
@@ -175,32 +154,38 @@ const GamesPanel = () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <h4 className="text-lg font-semibold text-slate-100">{game.title}</h4>
-                    <span className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300">
-                      {game.groupName}
-                    </span>
                   </div>
                   <p className="text-sm text-slate-300">{game.location}</p>
                   <p className="text-xs text-slate-400">Kickoff {formatStartTime(game.startTime)}</p>
+                  {game.createdByName && (
+                    <p className="text-xs text-slate-500">Hosted by {game.createdByName}</p>
+                  )}
                   <div className="flex items-center justify-between pt-2">
-                    <div className="flex -space-x-2">
-                      {(game.participants ?? []).map((participant) => (
-                        participant.photoURL ? (
-                          <img
-                            key={participant.uid}
-                            src={participant.photoURL}
-                            alt={participant.displayName}
-                            className="h-8 w-8 rounded-full border-2 border-slate-900"
-                            referrerPolicy="no-referrer"
-                          />
-                        ) : (
-                          <span
-                            key={participant.uid}
-                            className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-slate-800 text-xs text-slate-200"
-                          >
-                            {participant.displayName?.charAt(0) ?? '?'}
-                          </span>
-                        )
-                      ))}
+                    <div className="flex items-center gap-3">
+                      <div className="flex -space-x-2">
+                        {(game.participants ?? []).map((participant) => (
+                          participant.photoURL ? (
+                            <img
+                              key={participant.uid}
+                              src={participant.photoURL}
+                              alt={participant.displayName}
+                              className="h-8 w-8 rounded-full border-2 border-slate-900"
+                              referrerPolicy="no-referrer"
+                            />
+                          ) : (
+                            <span
+                              key={participant.uid}
+                              className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-900 bg-slate-800 text-xs text-slate-200"
+                            >
+                              {participant.displayName?.charAt(0) ?? '?'}
+                            </span>
+                          )
+                        ))}
+                      </div>
+                      <span className="text-xs text-slate-400">
+                        {(game.participants ?? []).length} player
+                        {(game.participants ?? []).length === 1 ? '' : 's'}
+                      </span>
                     </div>
                     <button
                       onClick={() => handleJoinGame(game.id)}
@@ -233,21 +218,25 @@ const GamesPanel = () => {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
                     <h4 className="text-lg font-semibold text-slate-100">{game.title}</h4>
-                    <span className="rounded-full bg-pitch-500/20 px-3 py-1 text-xs text-pitch-200">
-                      {game.groupName}
-                    </span>
                   </div>
                   <p className="text-sm text-slate-300">{game.location}</p>
                   <p className="text-xs text-slate-400">Kickoff {formatStartTime(game.startTime)}</p>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <span>Players:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {(game.participants ?? []).map((participant) => (
-                        <span key={participant.uid} className="rounded-full bg-slate-800 px-2 py-1">
-                          {participant.displayName || 'Anonymous player'}
-                        </span>
-                      ))}
+                  {game.createdByName && (
+                    <p className="text-xs text-slate-500">Hosted by {game.createdByName}</p>
+                  )}
+                  <div className="flex items-center justify-between pt-2">
+                    <div className="flex items-center gap-3 text-xs text-slate-400">
+                      <span>Players:</span>
+                      <span className="rounded-full bg-slate-800 px-2 py-1 text-slate-200">
+                        {(game.participants ?? []).length}
+                      </span>
                     </div>
+                    <button
+                      onClick={() => handleLeaveGame(game.id)}
+                      className="rounded-lg border border-pitch-500 px-3 py-1.5 text-xs font-semibold text-pitch-200 transition hover:bg-pitch-500/10"
+                    >
+                      Leave game
+                    </button>
                   </div>
                 </div>
               </li>

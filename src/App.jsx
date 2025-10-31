@@ -3,7 +3,6 @@ import { useAuth } from './hooks/useAuth.js';
 import LoadingState from './components/LoadingState.jsx';
 import Layout from './components/Layout.jsx';
 import Dashboard from './pages/Dashboard.jsx';
-import GroupsPage from './pages/Groups.jsx';
 import GamesPage from './pages/Games.jsx';
 import Login from './pages/Login.jsx';
 
@@ -27,18 +26,6 @@ const App = () => {
           user ? (
             <Layout>
               <Dashboard />
-            </Layout>
-          ) : (
-            <Navigate to="/login" replace />
-          )
-        }
-      />
-      <Route
-        path="/groups"
-        element={
-          user ? (
-            <Layout>
-              <GroupsPage />
             </Layout>
           ) : (
             <Navigate to="/login" replace />
