@@ -96,5 +96,45 @@ export const useGroups = () => {
     [allGroups, user],
   );
 
-  return { groups: userGroups, discoverableGroups, loading, error, createGroup, joinGroup };
+  const addMemberToGroup = useCallback(
+    async (groupId, memberId) => {
+      if (!user) {
+        throw new Error('You must be signed in to manage groups.');
+      }
+
+      if (!memberId) {
+        throw new Error('Select a player before adding them to the group.');
+      }
+
+      const group = allGroups.find((item) => item.id === groupId);
+      if (!group) {
+        throw new Error('Group not found.');
+      }
+
+      if (group.ownerId !== user.uid) {
+        throw new Error('Only the group owner can add new members.');
+      }
+
+      if ((group.members ?? []).includes(memberId)) {
+        throw new Error('This player is already a member of the group.');
+      }
+
+      setError(null);
+      const groupRef = doc(db, 'groups', groupId);
+      await updateDoc(groupRef, {
+        members: arrayUnion(memberId),
+      });
+    },
+    [allGroups, user],
+  );
+
+  return {
+    groups: userGroups,
+    discoverableGroups,
+    loading,
+    error,
+    createGroup,
+    joinGroup,
+    addMemberToGroup,
+  };
 };
