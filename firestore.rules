@@ -5,45 +5,41 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function participantUids(participants) {
-      return participants.map(participant, participant.uid);
+    function participantWithUid(participants, uid) {
+      return participants.where(participant, participant.uid == uid);
     }
 
-    function addedParticipantUids(existingParticipants, newParticipants) {
-      let newUids = participantUids(newParticipants);
-      let existingUids = participantUids(existingParticipants);
-      return newUids.where(uid, !existingUids.hasAny([uid]));
+    function participantExists(participants, uid) {
+      return participantWithUid(participants, uid).size() == 1;
     }
 
-    function removedParticipantUids(existingParticipants, newParticipants) {
-      let newUids = participantUids(newParticipants);
-      let existingUids = participantUids(existingParticipants);
-      return existingUids.where(uid, !newUids.hasAny([uid]));
-    }
-
-    function participantsUnchangedExcept(existingParticipants, newParticipants, uid) {
+    function otherParticipantsUnchanged(existingParticipants, newParticipants, uid) {
       return existingParticipants.every(participant,
-          participant.uid == uid || newParticipants.hasAny([participant]))
-        && newParticipants.every(participant,
-          participant.uid == uid || existingParticipants.hasAny([participant]));
+        participant.uid == uid || otherParticipantMatches(participant, newParticipants));
+    }
+
+    function otherParticipantMatches(participant, newParticipants) {
+      let updated = participantWithUid(newParticipants, participant.uid);
+      return updated.size() == 1 && updated[0] == participant;
+    }
+
+    function noOtherParticipantChanged(existingParticipants, newParticipants, uid) {
+      return otherParticipantsUnchanged(existingParticipants, newParticipants, uid)
+        && otherParticipantsUnchanged(newParticipants, existingParticipants, uid);
     }
 
     function isJoin(existingParticipants, newParticipants) {
-      let addedUids = addedParticipantUids(existingParticipants, newParticipants);
-      let removedUids = removedParticipantUids(existingParticipants, newParticipants);
-      return addedUids.size() == 1
-        && addedUids[0] == request.auth.uid
-        && removedUids.size() == 0
-        && participantsUnchangedExcept(existingParticipants, newParticipants, request.auth.uid);
+      return newParticipants.size() == existingParticipants.size() + 1
+        && participantExists(newParticipants, request.auth.uid)
+        && !participantExists(existingParticipants, request.auth.uid)
+        && noOtherParticipantChanged(existingParticipants, newParticipants, request.auth.uid);
     }
 
     function isLeave(existingParticipants, newParticipants) {
-      let addedUids = addedParticipantUids(existingParticipants, newParticipants);
-      let removedUids = removedParticipantUids(existingParticipants, newParticipants);
-      return addedUids.size() == 0
-        && removedUids.size() == 1
-        && removedUids[0] == request.auth.uid
-        && participantsUnchangedExcept(existingParticipants, newParticipants, request.auth.uid);
+      return existingParticipants.size() == newParticipants.size() + 1
+        && participantExists(existingParticipants, request.auth.uid)
+        && !participantExists(newParticipants, request.auth.uid)
+        && noOtherParticipantChanged(existingParticipants, newParticipants, request.auth.uid);
     }
 
     function isParticipantUpdateAllowed(existingParticipants, newParticipants) {
@@ -61,7 +57,7 @@ service cloud.firestore {
         && request.resource.data.participants[0].uid == request.auth.uid;
 
       allow update: if isSignedIn()
-        && request.resource.data.diff(resource.data).changedKeys().hasOnly(['participants'])
+        && request.writeFields.hasOnly(['participants'])
         && request.resource.data.participants is list
         && resource.data.participants is list
         && isParticipantUpdateAllowed(resource.data.participants, request.resource.data.participants);
