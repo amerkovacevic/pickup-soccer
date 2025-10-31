@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
+import { getAdditionalUserInfo, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/config.js';
+import { upsertPlayerProfile } from '../firebase/players.js';
 
 const AuthContext = createContext({
   user: null,
@@ -27,7 +28,15 @@ export const AuthProvider = ({ children }) => {
   const signInWithGoogle = async () => {
     setError(null);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const credential = await signInWithPopup(auth, googleProvider);
+
+      const additionalInfo = getAdditionalUserInfo(credential);
+      try {
+        await upsertPlayerProfile(credential.user, additionalInfo?.isNewUser);
+      } catch (profileError) {
+        console.error('Failed to save the player profile', profileError);
+        setError('We signed you in, but we could not save your player profile. Some features may not work.');
+      }
     } catch (err) {
       console.error('Google sign-in failed', err);
       setError(err.message);

@@ -35,17 +35,22 @@ This repository contains a Vite + React single-page application that helps local
 
 - Google sign-in via Firebase Authentication.
 - Group management to organize your teams or communities.
+- Group owners can add any registered player to their rosters.
 - Game scheduling form that attaches games to groups.
 - Live views for available games and the games you have already joined.
 - Tailwind CSS design system with dark theme styling.
+
+Every time a player signs in, the app stores or updates a profile document in the `players` collection. Group owners can pick from this directory when they need to add someone to their roster.
 
 ## Project structure
 
 The React application lives in the [`app`](./app) directory:
 
 - `src/firebase/config.js` – Firebase initialization.
+- `src/firebase/players.js` – Helper to store player profiles in Firestore.
 - `src/context/AuthContext.jsx` – Authentication context for the app.
 - `src/hooks/useGroups.js` and `src/hooks/useGames.js` – Firestore data hooks.
+- `src/hooks/usePlayers.js` – Hook that exposes the directory of registered players.
 - `src/components/` – Layout, group, and game UI components.
 - `src/pages/` – Route-level pages for login, dashboard, groups, and games.
 
@@ -59,7 +64,8 @@ firebase deploy --only firestore:rules
 
 The rules live in [`firestore.rules`](./firestore.rules) and cover the following scenarios:
 
-- Groups can be read by anyone, but only signed-in users can create a group. The creator is automatically registered as the owner and first member. Other signed-in users can only update a group by adding themselves to the `members` list.
+- Groups can be read by anyone, but only signed-in users can create a group. The creator is automatically registered as the owner and first member. Other signed-in users can add themselves to a group, and owners can add any registered player to their `members` list.
 - Games can be read by anyone, but only signed-in users can create a game. The creator is stored as the owner and is automatically the first entry in the `participants` list. Other signed-in users can only update a game by adding themselves as participants.
+- Signed-in users can read the `players` directory. Each user can create or update only their own profile document.
 
 Feel free to customize the UI, expand the data model, or add additional Firebase functionality to suit your league.
