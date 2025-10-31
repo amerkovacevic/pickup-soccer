@@ -58,9 +58,12 @@ service cloud.firestore {
 
       allow update: if isSignedIn()
         && request.writeFields.hasOnly(['participants'])
-        && request.resource.data.participants is list
         && resource.data.participants is list
-        && isParticipantUpdateAllowed(resource.data.participants, request.resource.data.participants);
+        && getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants is list
+        && isParticipantUpdateAllowed(
+          resource.data.participants,
+          getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants,
+        );
     }
 
     match /players/{playerId} {
