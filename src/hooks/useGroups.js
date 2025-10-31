@@ -1,18 +1,21 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   addDoc,
+  arrayUnion,
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase/config.js';
 import { useAuth } from './useAuth.js';
 
 export const useGroups = () => {
   const { user } = useAuth();
-  const [groups, setGroups] = useState([]);
+  const [allGroups, setAllGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -24,7 +27,7 @@ export const useGroups = () => {
       groupsQuery,
       (snapshot) => {
         const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setGroups(data);
+        setAllGroups(data);
         setLoading(false);
       },
       (err) => {
@@ -57,5 +60,41 @@ export const useGroups = () => {
     [user],
   );
 
-  return { groups, loading, error, createGroup };
+  const userGroups = useMemo(() => {
+    if (!user) {
+      return [];
+    }
+
+    return allGroups.filter((group) => (group.members ?? []).includes(user.uid));
+  }, [allGroups, user]);
+
+  const discoverableGroups = useMemo(() => {
+    if (!user) {
+      return [];
+    }
+
+    return allGroups.filter((group) => !(group.members ?? []).includes(user.uid));
+  }, [allGroups, user]);
+
+  const joinGroup = useCallback(
+    async (groupId) => {
+      if (!user) {
+        throw new Error('You must be signed in to join a group.');
+      }
+
+      const group = allGroups.find((item) => item.id === groupId);
+      if (group && (group.members ?? []).includes(user.uid)) {
+        throw new Error('You are already a member of this group.');
+      }
+
+      setError(null);
+      const groupRef = doc(db, 'groups', groupId);
+      await updateDoc(groupRef, {
+        members: arrayUnion(user.uid),
+      });
+    },
+    [allGroups, user],
+  );
+
+  return { groups: userGroups, discoverableGroups, loading, error, createGroup, joinGroup };
 };
