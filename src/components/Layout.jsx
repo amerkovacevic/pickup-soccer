@@ -22,8 +22,11 @@ const Layout = ({ children }) => {
             <NavLink to="/" className={navLinkClasses} end>
               Dashboard
             </NavLink>
-            <NavLink to="/games" className={navLinkClasses}>
-              Games
+            <NavLink to="/games/available" className={navLinkClasses}>
+              Available games
+            </NavLink>
+            <NavLink to="/games/create" className={navLinkClasses}>
+              Create a game
             </NavLink>
           </nav>
           <div className="flex items-center gap-3">

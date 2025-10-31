@@ -51,7 +51,7 @@ const Dashboard = () => {
             <p className="text-xs uppercase tracking-wide text-slate-400">Scheduled games</p>
             <p className="mt-2 text-3xl font-semibold text-pitch-200">{games.length}</p>
             <p className="mt-1 text-xs text-slate-500">Matches on the calendar for everyone to join.</p>
-            <Link to="/games" className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100">
+            <Link to="/games/create" className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100">
               Create a game →
             </Link>
           </div>
@@ -59,7 +59,10 @@ const Dashboard = () => {
             <p className="text-xs uppercase tracking-wide text-slate-400">Open games</p>
             <p className="mt-2 text-3xl font-semibold text-pitch-200">{availableGames.length}</p>
             <p className="mt-1 text-xs text-slate-500">Matches looking for more players right now.</p>
-            <Link to="/games" className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100">
+            <Link
+              to="/games/available"
+              className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100"
+            >
               See all games →
             </Link>
           </div>
@@ -67,7 +70,10 @@ const Dashboard = () => {
             <p className="text-xs uppercase tracking-wide text-slate-400">Your games</p>
             <p className="mt-2 text-3xl font-semibold text-pitch-200">{joinedGames.length}</p>
             <p className="mt-1 text-xs text-slate-500">You are confirmed on these upcoming fixtures.</p>
-            <Link to="/games" className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100">
+            <Link
+              to="/games/available"
+              className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100"
+            >
               Manage games →
             </Link>
           </div>
@@ -77,9 +83,15 @@ const Dashboard = () => {
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-slate-100">Upcoming games</h2>
-          <Link to="/games" className="text-xs font-semibold text-pitch-200 hover:text-pitch-100">
-            Create or join a game
-          </Link>
+          <div className="flex gap-3 text-xs font-semibold">
+            <Link to="/games/available" className="text-pitch-200 hover:text-pitch-100">
+              Join a game
+            </Link>
+            <span className="text-slate-500">•</span>
+            <Link to="/games/create" className="text-pitch-200 hover:text-pitch-100">
+              Create a game
+            </Link>
+          </div>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {joinedGames.slice(0, 2).map((game) => {
