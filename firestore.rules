@@ -6,6 +6,10 @@ service cloud.firestore {
     }
 
     match /groups/{groupId} {
+      function updatedMembers() {
+        return getAfter(/databases/$(database)/documents/groups/$(groupId)).data.members;
+      }
+
       allow read: if true;
 
       allow create: if isSignedIn()
@@ -16,17 +20,21 @@ service cloud.firestore {
 
       allow update: if isSignedIn()
         && request.resource.data.diff(resource.data).changedKeys().hasOnly(['members'])
-        && request.resource.data.members is list
-        && request.resource.data.members.hasAll(resource.data.members)
-        && request.resource.data.members.size() == resource.data.members.size() + 1
-        && request.resource.data.members.where(member, !resource.data.members.hasAny([member])).size() == 1
+        && updatedMembers() is list
+        && updatedMembers().hasAll(resource.data.members)
+        && updatedMembers().size() == resource.data.members.size() + 1
+        && updatedMembers().where(member, !resource.data.members.hasAny([member])).size() == 1
         && (
-          request.resource.data.members.where(member, !resource.data.members.hasAny([member]))[0] == request.auth.uid
+          updatedMembers().where(member, !resource.data.members.hasAny([member]))[0] == request.auth.uid
           || resource.data.ownerId == request.auth.uid
         );
     }
 
     match /games/{gameId} {
+      function updatedParticipants() {
+        return getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants;
+      }
+
       allow read: if true;
 
       allow create: if isSignedIn()
@@ -37,11 +45,11 @@ service cloud.firestore {
 
       allow update: if isSignedIn()
         && request.resource.data.diff(resource.data).changedKeys().hasOnly(['participants'])
-        && request.resource.data.participants is list
-        && request.resource.data.participants.hasAll(resource.data.participants)
-        && request.resource.data.participants.size() == resource.data.participants.size() + 1
-        && request.resource.data.participants.where(participant, !resource.data.participants.hasAny([participant])).size() == 1
-        && request.resource.data.participants.where(participant, !resource.data.participants.hasAny([participant]))[0].uid == request.auth.uid;
+        && updatedParticipants() is list
+        && updatedParticipants().hasAll(resource.data.participants)
+        && updatedParticipants().size() == resource.data.participants.size() + 1
+        && updatedParticipants().where(participant, !resource.data.participants.hasAny([participant])).size() == 1
+        && updatedParticipants().where(participant, !resource.data.participants.hasAny([participant]))[0].uid == request.auth.uid;
     }
 
     match /players/{playerId} {
