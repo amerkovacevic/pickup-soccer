@@ -53,6 +53,7 @@ export const useGroups = () => {
         description,
         ownerId: user.uid,
         ownerName: user.displayName,
+        ownerEmail: user.email,
         members: [user.uid],
         createdAt: serverTimestamp(),
       });

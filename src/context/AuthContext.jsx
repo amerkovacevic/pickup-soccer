@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase/config.js';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { auth, db, googleProvider } from '../firebase/config.js';
 
 const AuthContext = createContext({
   user: null,
@@ -16,7 +17,38 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const userRef = doc(db, 'users', firebaseUser.uid);
+          const snapshot = await getDoc(userRef);
+
+          if (snapshot.exists()) {
+            await setDoc(
+              userRef,
+              {
+                displayName: firebaseUser.displayName ?? '',
+                email: firebaseUser.email ?? '',
+                photoURL: firebaseUser.photoURL ?? '',
+                lastLoginAt: serverTimestamp(),
+              },
+              { merge: true },
+            );
+          } else {
+            await setDoc(userRef, {
+              uid: firebaseUser.uid,
+              displayName: firebaseUser.displayName ?? '',
+              email: firebaseUser.email ?? '',
+              photoURL: firebaseUser.photoURL ?? '',
+              createdAt: serverTimestamp(),
+              lastLoginAt: serverTimestamp(),
+            });
+          }
+        } catch (err) {
+          console.error('Failed to sync user profile', err);
+        }
+      }
+
       setUser(firebaseUser);
       setLoading(false);
     });
