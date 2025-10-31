@@ -12,12 +12,34 @@ const formatStartTime = (startTime) => {
   }
 };
 
+const getMaxPlayers = (game) => {
+  if (!game) return null;
+  if (typeof game.maxPlayers === 'number') {
+    return game.maxPlayers;
+  }
+  const parsed = Number(game.maxPlayers);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
+const getPlayerProgress = (game) => {
+  const totalPlayers = (game?.participants ?? []).length;
+  const maxPlayers = getMaxPlayers(game);
+
+  if (!maxPlayers) {
+    return { totalPlayers, maxPlayers: null, percentage: null };
+  }
+
+  const percentage = Math.min(100, Math.round((totalPlayers / maxPlayers) * 100));
+  return { totalPlayers, maxPlayers, percentage };
+};
+
 const GamesPanel = () => {
   const { availableGames, joinedGames, loading, error, createGame, joinGame, leaveGame } = useGames();
   const [formData, setFormData] = useState({
     title: '',
     location: '',
     startTime: '',
+    maxPlayers: '',
   });
   const [status, setStatus] = useState(null);
 
@@ -35,8 +57,9 @@ const GamesPanel = () => {
         title: formData.title,
         location: formData.location,
         startTime: formData.startTime,
+        maxPlayers: formData.maxPlayers,
       });
-      setFormData({ title: '', location: '', startTime: '' });
+      setFormData({ title: '', location: '', startTime: '', maxPlayers: '' });
       setStatus({ type: 'success', message: 'Game created successfully!' });
     } catch (err) {
       setStatus({ type: 'error', message: err.message });
@@ -126,6 +149,24 @@ const GamesPanel = () => {
               required
             />
           </div>
+          <div>
+            <label htmlFor="game-max-players" className="block text-sm font-medium text-slate-200">
+              Maximum players
+            </label>
+            <input
+              id="game-max-players"
+              name="maxPlayers"
+              type="number"
+              min="1"
+              value={formData.maxPlayers}
+              onChange={handleInputChange}
+              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-pitch-500 focus:outline-none"
+              placeholder="10"
+            />
+            <p className="mt-1 text-[11px] text-slate-500">
+              Leave blank for unlimited spots.
+            </p>
+          </div>
           <div className="md:col-span-2 flex justify-end">
             <button
               type="submit"
@@ -183,17 +224,51 @@ const GamesPanel = () => {
                         ))}
                       </div>
                       <span className="text-xs text-slate-400">
-                        {(game.participants ?? []).length} player
-                        {(game.participants ?? []).length === 1 ? '' : 's'}
+                        {(() => {
+                          const { totalPlayers, maxPlayers } = getPlayerProgress(game);
+                          if (!maxPlayers) {
+                            return `${totalPlayers} player${totalPlayers === 1 ? '' : 's'}`;
+                          }
+                          return `${totalPlayers} / ${maxPlayers} players`;
+                        })()}
                       </span>
                     </div>
-                    <button
-                      onClick={() => handleJoinGame(game.id)}
-                      className="rounded-lg bg-pitch-500 px-3 py-1.5 text-xs font-semibold text-slate-900 transition hover:bg-pitch-200"
-                    >
-                      Join game
-                    </button>
+                    {(() => {
+                      const { totalPlayers, maxPlayers } = getPlayerProgress(game);
+                      const isFull = maxPlayers ? totalPlayers >= maxPlayers : false;
+                      return (
+                        <button
+                          onClick={() => handleJoinGame(game.id)}
+                          disabled={isFull}
+                          className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                            isFull
+                              ? 'cursor-not-allowed bg-slate-800 text-slate-500'
+                              : 'bg-pitch-500 text-slate-900 hover:bg-pitch-200'
+                          }`}
+                        >
+                          {isFull ? 'Game full' : 'Join game'}
+                        </button>
+                      );
+                    })()}
                   </div>
+                  {(() => {
+                    const { maxPlayers, percentage } = getPlayerProgress(game);
+                    if (!maxPlayers || percentage === null) return null;
+                    return (
+                      <div className="mt-3">
+                        <div className="flex justify-between text-[11px] text-slate-400">
+                          <span>Spots filled</span>
+                          <span>{percentage}%</span>
+                        </div>
+                        <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                          <div
+                            className="h-full rounded-full bg-pitch-500"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </li>
             ))}
@@ -228,7 +303,10 @@ const GamesPanel = () => {
                     <div className="flex items-center gap-3 text-xs text-slate-400">
                       <span>Players:</span>
                       <span className="rounded-full bg-slate-800 px-2 py-1 text-slate-200">
-                        {(game.participants ?? []).length}
+                        {(() => {
+                          const { totalPlayers, maxPlayers } = getPlayerProgress(game);
+                          return maxPlayers ? `${totalPlayers} / ${maxPlayers}` : totalPlayers;
+                        })()}
                       </span>
                     </div>
                     <button
@@ -238,6 +316,24 @@ const GamesPanel = () => {
                       Leave game
                     </button>
                   </div>
+                  {(() => {
+                    const { maxPlayers, percentage } = getPlayerProgress(game);
+                    if (!maxPlayers || percentage === null) return null;
+                    return (
+                      <div className="mt-3">
+                        <div className="flex justify-between text-[11px] text-slate-400">
+                          <span>Spots filled</span>
+                          <span>{percentage}%</span>
+                        </div>
+                        <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                          <div
+                            className="h-full rounded-full bg-pitch-500"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </li>
             ))}
