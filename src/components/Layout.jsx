@@ -55,7 +55,7 @@ const Layout = ({ children }) => {
         {children}
       </main>
       <footer className="border-t border-slate-800 bg-slate-900/80 py-4 text-center text-xs text-slate-500">
-        Built with ❤️ for the local soccer community.
+        <p>&copy; {new Date().getFullYear()} Amer Kovacevic All rights reserved.</p>
       </footer>
     </div>
   );
