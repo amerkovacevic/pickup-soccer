@@ -46,13 +46,14 @@ export const useGames = () => {
   }, []);
 
   const createGame = useCallback(
-    async ({ title, location, startTime }) => {
+    async ({ title, location, startTime, maxPlayers }) => {
       if (!user) {
         throw new Error('You must be signed in to create a game.');
       }
 
       setError(null);
       const gamesRef = collection(db, 'games');
+      const parsedMaxPlayers = Number(maxPlayers);
       await addDoc(gamesRef, {
         title,
         location,
@@ -60,6 +61,7 @@ export const useGames = () => {
         createdAt: serverTimestamp(),
         createdBy: user.uid,
         createdByName: user.displayName,
+        maxPlayers: Number.isFinite(parsedMaxPlayers) && parsedMaxPlayers > 0 ? parsedMaxPlayers : null,
         participants: [
           {
             uid: user.uid,
@@ -80,6 +82,32 @@ export const useGames = () => {
 
       setError(null);
       const gameRef = doc(db, 'games', gameId);
+      const game = games.find((item) => item.id === gameId);
+
+      if (!game) {
+        throw new Error('Game not found.');
+      }
+
+      const participantAlreadyJoined = (game.participants ?? []).some(
+        (participant) => participant.uid === user.uid,
+      );
+
+      if (participantAlreadyJoined) {
+        throw new Error('You are already part of this game.');
+      }
+
+      const maxPlayers =
+        typeof game.maxPlayers === 'number'
+          ? game.maxPlayers
+          : Number.isFinite(Number(game.maxPlayers))
+            ? Number(game.maxPlayers)
+            : null;
+      const currentPlayers = (game.participants ?? []).length;
+
+      if (maxPlayers && currentPlayers >= maxPlayers) {
+        throw new Error('This game is already full.');
+      }
+
       await updateDoc(gameRef, {
         participants: arrayUnion({
           uid: user.uid,
@@ -88,7 +116,7 @@ export const useGames = () => {
         }),
       });
     },
-    [user],
+    [games, user],
   );
 
   const leaveGame = useCallback(

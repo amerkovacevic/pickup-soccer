@@ -4,6 +4,8 @@ import LoadingState from './components/LoadingState.jsx';
 import Layout from './components/Layout.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import GamesPage from './pages/Games.jsx';
+import AvailableGamesPage from './pages/AvailableGames.jsx';
+import CreateGamePage from './pages/CreateGame.jsx';
 import Login from './pages/Login.jsx';
 
 const App = () => {
@@ -34,10 +36,26 @@ const App = () => {
       />
       <Route
         path="/games"
+        element={user ? <GamesPage /> : <Navigate to="/login" replace />}
+      />
+      <Route
+        path="/games/available"
         element={
           user ? (
             <Layout>
-              <GamesPage />
+              <AvailableGamesPage />
+            </Layout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+      <Route
+        path="/games/create"
+        element={
+          user ? (
+            <Layout>
+              <CreateGamePage />
             </Layout>
           ) : (
             <Navigate to="/login" replace />
