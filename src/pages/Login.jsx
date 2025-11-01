@@ -14,9 +14,9 @@ const Login = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-4">
-        <div className="w-full max-w-lg space-y-8 rounded-3xl border border-slate-800/80 bg-slate-900/80 p-10 text-center shadow-2xl shadow-emerald-500/10 backdrop-blur">
+        <div className="w-full max-w-lg space-y-8 rounded-3xl border border-slate-800/80 bg-slate-900/80 p-10 text-center shadow-2xl shadow-blue-500/10 backdrop-blur">
           <div className="space-y-3">
-            <p className="text-sm uppercase tracking-[0.35em] text-emerald-400">Pickup Soccer</p>
+            <p className="text-sm uppercase tracking-[0.35em] text-blue-400">Pickup Soccer</p>
             <h1 className="text-4xl font-semibold text-white sm:text-5xl">Matchday HQ</h1>
             <p className="text-base text-slate-400">
               Coordinate friendly fixtures, manage squads, and keep your crew in the loop without missing a kickoff.
@@ -25,7 +25,7 @@ const Login = () => {
             <button
               type="button"
               onClick={signInWithGoogle}
-              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-emerald-400/90 px-6 py-3 text-lg font-semibold text-slate-950 transition hover:bg-emerald-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-blue-400/90 px-6 py-3 text-lg font-semibold text-slate-950 transition hover:bg-blue-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
             >
               <span>Continue with Google</span>
             <svg className="h-6 w-6" viewBox="0 0 533.5 544.3" aria-hidden="true">
