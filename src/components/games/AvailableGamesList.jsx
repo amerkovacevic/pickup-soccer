@@ -1,6 +1,6 @@
 import { getPlayerProgress, formatStartTime } from './gameUtils.js';
 
-const AvailableGamesList = ({ games, loading, onJoin }) => (
+const AvailableGamesList = ({ games, loading, onJoin, onDelete, currentUserId }) => (
   <div className="space-y-4">
     <div className="flex items-center justify-between">
       <h3 className="text-lg font-semibold text-accent-50">Available games</h3>
@@ -50,17 +50,27 @@ const AvailableGamesList = ({ games, loading, onJoin }) => (
                     }`}
                   </span>
                 </div>
-                <button
-                  onClick={() => onJoin?.(game.id)}
-                  disabled={isFull}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition touch-manipulation active:scale-95 ${
-                    isFull
-                      ? 'cursor-not-allowed bg-secondary-600 text-quaternary-500'
-                      : 'bg-pitch-500 text-accent-50 hover:bg-pitch-400 active:bg-pitch-400'
-                  }`}
-                >
-                  {isFull ? 'Game full' : 'Join game'}
-                </button>
+                <div className="flex items-center gap-2">
+                  {currentUserId && game.createdBy === currentUserId && (
+                    <button
+                      onClick={() => onDelete?.(game.id)}
+                      className="rounded-lg border border-error-500 px-3 py-1.5 text-xs font-semibold text-error-300 transition hover:bg-error-500/10 active:bg-error-500/10 touch-manipulation"
+                    >
+                      Delete
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onJoin?.(game.id)}
+                    disabled={isFull}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition touch-manipulation active:scale-95 ${
+                      isFull
+                        ? 'cursor-not-allowed bg-secondary-600 text-quaternary-500'
+                        : 'bg-pitch-500 text-accent-50 hover:bg-pitch-400 active:bg-pitch-400'
+                    }`}
+                  >
+                    {isFull ? 'Game full' : 'Join game'}
+                  </button>
+                </div>
               </div>
               {maxPlayers && percentage !== null && (
                 <div className="mt-3">

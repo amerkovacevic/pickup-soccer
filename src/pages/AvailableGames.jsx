@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import AvailableGamesList from '../components/games/AvailableGamesList.jsx';
 import JoinedGamesList from '../components/games/JoinedGamesList.jsx';
 import { useGames } from '../hooks/useGames.js';
+import { useAuth } from '../hooks/useAuth.js';
 
 const AvailableGamesPage = () => {
-  const { availableGames, joinedGames, loading, error, joinGame, leaveGame } = useGames();
+  const { user } = useAuth();
+  const { games, availableGames, joinedGames, loading, error, joinGame, leaveGame, deleteGame } = useGames();
   const [status, setStatus] = useState(null);
 
   const handleJoinGame = async (gameId) => {
@@ -23,6 +25,24 @@ const AvailableGamesPage = () => {
     try {
       await leaveGame(gameId);
       setStatus({ type: 'success', message: 'You have left the game.' });
+    } catch (err) {
+      setStatus({ type: 'error', message: err.message });
+    }
+  };
+
+  const handleDeleteGame = async (gameId) => {
+    // Find the game to get its title for the confirmation
+    const game = games.find((g) => g.id === gameId);
+    const gameTitle = game?.title || 'this game';
+
+    if (!window.confirm(`Are you sure you want to delete "${gameTitle}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setStatus(null);
+    try {
+      await deleteGame(gameId);
+      setStatus({ type: 'success', message: 'Game has been deleted.' });
     } catch (err) {
       setStatus({ type: 'error', message: err.message });
     }
@@ -58,8 +78,19 @@ const AvailableGamesPage = () => {
       {error && <p className="text-sm text-warning-400">{error}</p>}
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <AvailableGamesList games={availableGames} loading={loading} onJoin={handleJoinGame} />
-        <JoinedGamesList games={joinedGames} onLeave={handleLeaveGame} />
+        <AvailableGamesList
+          games={availableGames}
+          loading={loading}
+          onJoin={handleJoinGame}
+          onDelete={handleDeleteGame}
+          currentUserId={user?.uid}
+        />
+        <JoinedGamesList
+          games={joinedGames}
+          onLeave={handleLeaveGame}
+          onDelete={handleDeleteGame}
+          currentUserId={user?.uid}
+        />
       </div>
     </div>
   );

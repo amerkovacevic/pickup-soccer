@@ -5,6 +5,7 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   orderBy,
@@ -141,6 +142,29 @@ export const useGames = () => {
     [games, user],
   );
 
+  const deleteGame = useCallback(
+    async (gameId) => {
+      if (!user) {
+        throw new Error('You must be signed in to delete a game.');
+      }
+
+      const game = games.find((item) => item.id === gameId);
+
+      if (!game) {
+        throw new Error('Game not found.');
+      }
+
+      if (game.createdBy !== user.uid) {
+        throw new Error('Only the game creator can delete this game.');
+      }
+
+      setError(null);
+      const gameRef = doc(db, 'pickupSoccer_games', gameId);
+      await deleteDoc(gameRef);
+    },
+    [games, user],
+  );
+
   const availableGames = useMemo(() => {
     if (!user) {
       return games;
@@ -168,5 +192,6 @@ export const useGames = () => {
     createGame,
     joinGame,
     leaveGame,
+    deleteGame,
   };
 };

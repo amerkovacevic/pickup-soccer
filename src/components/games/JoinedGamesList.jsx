@@ -1,6 +1,6 @@
 import { getPlayerProgress, formatStartTime } from './gameUtils.js';
 
-const JoinedGamesList = ({ games, onLeave }) => (
+const JoinedGamesList = ({ games, onLeave, onDelete, currentUserId }) => (
   <div className="space-y-4">
     <div className="flex items-center justify-between">
       <h3 className="text-lg font-semibold text-accent-50">Your joined games</h3>
@@ -27,12 +27,22 @@ const JoinedGamesList = ({ games, onLeave }) => (
                     {maxPlayers ? `${totalPlayers} / ${maxPlayers}` : totalPlayers}
                   </span>
                 </div>
-                <button
-                  onClick={() => onLeave?.(game.id)}
-                  className="rounded-lg border border-pitch-500 px-3 py-1.5 text-xs font-semibold text-pitch-200 transition hover:bg-pitch-500/10 active:bg-pitch-500/10 touch-manipulation"
-                >
-                  Leave game
-                </button>
+                <div className="flex items-center gap-2">
+                  {currentUserId && game.createdBy === currentUserId && (
+                    <button
+                      onClick={() => onDelete?.(game.id)}
+                      className="rounded-lg border border-error-500 px-3 py-1.5 text-xs font-semibold text-error-300 transition hover:bg-error-500/10 active:bg-error-500/10 touch-manipulation"
+                    >
+                      Delete
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onLeave?.(game.id)}
+                    className="rounded-lg border border-pitch-500 px-3 py-1.5 text-xs font-semibold text-pitch-200 transition hover:bg-pitch-500/10 active:bg-pitch-500/10 touch-manipulation"
+                  >
+                    Leave game
+                  </button>
+                </div>
               </div>
               {maxPlayers && percentage !== null && (
                 <div className="mt-3">
