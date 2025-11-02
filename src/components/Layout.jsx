@@ -5,8 +5,8 @@ import { useAuth } from '../hooks/useAuth.js';
 const navLinkClasses = ({ isActive }) =>
   `rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150 ${
     isActive
-      ? 'bg-pitch-500 text-slate-900 shadow-lg'
-      : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+      ? 'bg-pitch-500 text-primary-800 shadow-lg'
+      : 'text-quaternary-300 hover:bg-secondary-600 hover:text-accent-50'
   }`;
 
 const Layout = ({ children }) => {
@@ -28,8 +28,8 @@ const Layout = ({ children }) => {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-950">
-      <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+    <div className="flex min-h-screen flex-col bg-primary-800">
+      <header className="border-b border-tertiary-500/30 bg-primary-800/90 backdrop-blur">
         <div className="mx-auto w-full max-w-6xl px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             <Link to="/" className="text-2xl font-bold text-pitch-200">
@@ -47,17 +47,17 @@ const Layout = ({ children }) => {
                 <img
                   src={user.photoURL}
                   alt={user.displayName ?? 'Profile'}
-                  className="h-10 w-10 rounded-full border border-slate-700"
+                  className="h-10 w-10 rounded-full border border-tertiary-600"
                   referrerPolicy="no-referrer"
                 />
               )}
               <div className="text-right">
-                <p className="text-sm font-semibold text-slate-100">{user?.displayName}</p>
-                <p className="text-xs text-slate-400">{user?.email}</p>
+                <p className="text-sm font-semibold text-accent-50">{user?.displayName}</p>
+                <p className="text-xs text-quaternary-400">{user?.email}</p>
               </div>
               <button
                 onClick={signOutUser}
-                className="rounded-md bg-slate-800 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-700"
+                className="rounded-md bg-secondary-700 px-4 py-2 text-sm font-medium text-accent-50 transition hover:bg-secondary-600 active:bg-secondary-600 touch-manipulation"
               >
                 Sign out
               </button>
@@ -65,7 +65,7 @@ const Layout = ({ children }) => {
             <button
               type="button"
               onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center rounded-md border border-slate-700 p-2 text-slate-200 transition hover:bg-slate-800 md:hidden"
+              className="inline-flex items-center justify-center rounded-md border border-tertiary-600 p-2 text-accent-50 transition hover:bg-secondary-700 active:bg-secondary-700 md:hidden touch-manipulation"
               aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={isMobileMenuOpen}
             >
@@ -88,7 +88,7 @@ const Layout = ({ children }) => {
           <div
             className={`md:hidden ${
               isMobileMenuOpen
-                ? 'mt-4 flex flex-col gap-4 border-t border-slate-800 pt-4'
+                ? 'mt-4 flex flex-col gap-4 border-t border-tertiary-500/30 pt-4'
                 : 'hidden'
             }`}
           >
@@ -112,18 +112,18 @@ const Layout = ({ children }) => {
                 <img
                   src={user.photoURL}
                   alt={user.displayName ?? 'Profile'}
-                  className="h-12 w-12 rounded-full border border-slate-700"
+                  className="h-12 w-12 rounded-full border border-tertiary-600"
                   referrerPolicy="no-referrer"
                 />
               )}
               <div>
-                <p className="text-sm font-semibold text-slate-100">{user?.displayName}</p>
-                <p className="text-xs text-slate-400">{user?.email}</p>
+                <p className="text-sm font-semibold text-accent-50">{user?.displayName}</p>
+                <p className="text-xs text-quaternary-400">{user?.email}</p>
               </div>
             </div>
             <button
               onClick={handleSignOut}
-              className="w-full rounded-md bg-slate-800 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-700"
+              className="w-full rounded-md bg-secondary-700 px-4 py-2 text-sm font-medium text-accent-50 transition hover:bg-secondary-600 active:bg-secondary-600 touch-manipulation"
             >
               Sign out
             </button>
@@ -133,7 +133,7 @@ const Layout = ({ children }) => {
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6">
         {children}
       </main>
-      <footer className="border-t border-slate-800 bg-slate-900/80 py-4 text-center text-xs text-slate-500">
+      <footer className="border-t border-tertiary-500/30 bg-primary-800/80 py-4 text-center text-xs text-quaternary-500">
         <p>&copy; {new Date().getFullYear()} Amer Kovacevic All rights reserved.</p>
       </footer>
     </div>

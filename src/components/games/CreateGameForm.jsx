@@ -28,7 +28,7 @@ const CreateGameForm = ({ onSubmit, isSubmitting = false }) => {
   return (
     <form onSubmit={handleSubmit} className="mt-5 grid gap-4 md:grid-cols-2">
       <div className="md:col-span-1">
-        <label htmlFor="game-title" className="block text-sm font-medium text-slate-200">
+        <label htmlFor="game-title" className="block text-sm font-medium text-quaternary-300">
           Title
         </label>
         <input
@@ -37,13 +37,13 @@ const CreateGameForm = ({ onSubmit, isSubmitting = false }) => {
           type="text"
           value={formData.title}
           onChange={handleInputChange}
-          className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-pitch-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-tertiary-600 bg-secondary-700 px-3 py-2 text-accent-50 placeholder:text-quaternary-500 focus:border-pitch-500 focus:outline-none focus:ring-2 focus:ring-pitch-500/40"
           placeholder="Friday Night 5-a-side"
           required
         />
       </div>
       <div className="md:col-span-1">
-        <label htmlFor="game-location" className="block text-sm font-medium text-slate-200">
+        <label htmlFor="game-location" className="block text-sm font-medium text-quaternary-300">
           Location
         </label>
         <input
@@ -52,13 +52,13 @@ const CreateGameForm = ({ onSubmit, isSubmitting = false }) => {
           type="text"
           value={formData.location}
           onChange={handleInputChange}
-          className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-pitch-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-tertiary-600 bg-secondary-700 px-3 py-2 text-accent-50 placeholder:text-quaternary-500 focus:border-pitch-500 focus:outline-none focus:ring-2 focus:ring-pitch-500/40"
           placeholder="Greenwood Park Turf"
           required
         />
       </div>
       <div>
-        <label htmlFor="game-start" className="block text-sm font-medium text-slate-200">
+        <label htmlFor="game-start" className="block text-sm font-medium text-quaternary-300">
           Kickoff time
         </label>
         <input
@@ -67,12 +67,12 @@ const CreateGameForm = ({ onSubmit, isSubmitting = false }) => {
           type="datetime-local"
           value={formData.startTime}
           onChange={handleInputChange}
-          className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-pitch-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-tertiary-600 bg-secondary-700 px-3 py-2 text-accent-50 focus:border-pitch-500 focus:outline-none focus:ring-2 focus:ring-pitch-500/40"
           required
         />
       </div>
       <div>
-        <label htmlFor="game-max-players" className="block text-sm font-medium text-slate-200">
+        <label htmlFor="game-max-players" className="block text-sm font-medium text-quaternary-300">
           Maximum players
         </label>
         <input
@@ -82,16 +82,16 @@ const CreateGameForm = ({ onSubmit, isSubmitting = false }) => {
           min="1"
           value={formData.maxPlayers}
           onChange={handleInputChange}
-          className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-pitch-500 focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-tertiary-600 bg-secondary-700 px-3 py-2 text-accent-50 placeholder:text-quaternary-500 focus:border-pitch-500 focus:outline-none focus:ring-2 focus:ring-pitch-500/40"
           placeholder="10"
         />
-        <p className="mt-1 text-[11px] text-slate-500">Leave blank for unlimited spots.</p>
+        <p className="mt-1 text-[11px] text-quaternary-500">Leave blank for unlimited spots.</p>
       </div>
       <div className="md:col-span-2 flex justify-end">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-lg bg-pitch-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-pitch-200 disabled:cursor-not-allowed disabled:bg-slate-800 disabled:text-slate-400"
+          className="rounded-lg bg-pitch-500 px-4 py-2 text-sm font-semibold text-primary-800 transition hover:bg-pitch-400 active:bg-pitch-400 disabled:cursor-not-allowed disabled:bg-secondary-600 disabled:text-quaternary-500 touch-manipulation"
         >
           {isSubmitting ? 'Publishing…' : 'Publish game'}
         </button>

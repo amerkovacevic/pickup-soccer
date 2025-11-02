@@ -13,19 +13,19 @@ const Login = () => {
   }, [user, navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-4">
-        <div className="w-full max-w-lg space-y-8 rounded-3xl border border-slate-800/80 bg-slate-900/80 p-10 text-center shadow-2xl shadow-blue-500/10 backdrop-blur">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary-800 via-secondary-700 to-primary-800 px-4">
+        <div className="w-full max-w-lg space-y-8 rounded-3xl border border-tertiary-500/50 bg-secondary-700/90 p-10 text-center shadow-2xl shadow-tertiary-500/20 backdrop-blur">
           <div className="space-y-3">
-            <p className="text-sm uppercase tracking-[0.35em] text-blue-400">Pickup Soccer</p>
-            <h1 className="text-4xl font-semibold text-white sm:text-5xl">Matchday HQ</h1>
-            <p className="text-base text-slate-400">
+            <p className="text-sm uppercase tracking-[0.35em] text-tertiary-400">Pickup Soccer</p>
+            <h1 className="text-4xl font-semibold text-accent-50 sm:text-5xl">Matchday HQ</h1>
+            <p className="text-base text-quaternary-400">
               Coordinate friendly fixtures, manage squads, and keep your crew in the loop without missing a kickoff.
             </p>
 
             <button
               type="button"
               onClick={signInWithGoogle}
-              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-blue-400/90 px-6 py-3 text-lg font-semibold text-slate-950 transition hover:bg-blue-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-tertiary-500 px-6 py-3 text-lg font-semibold text-accent-50 transition hover:bg-tertiary-600 active:bg-tertiary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-tertiary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-800 touch-manipulation"
             >
               <span>Continue with Google</span>
             <svg className="h-6 w-6" viewBox="0 0 533.5 544.3" aria-hidden="true">
@@ -48,8 +48,8 @@ const Login = () => {
             </svg>
             </button>
 
-            {error && <p className="mt-6 text-center text-sm text-rose-400">{error}</p>}
-            <p className="mt-8 text-center text-xs leading-relaxed text-slate-500">
+            {error && <p className="mt-6 text-center text-sm text-warning-400">{error}</p>}
+            <p className="mt-8 text-center text-xs leading-relaxed text-quaternary-500">
               By continuing you agree to share your name and email so captains can invite you to fixtures and manage rosters.
             </p>
           </div>

@@ -31,13 +31,13 @@ const AvailableGamesPage = () => {
   return (
     <div className="space-y-6">
       <header className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold text-slate-100">Games available to join</h1>
-        <p className="text-sm text-slate-400">
+        <h1 className="text-2xl font-semibold text-accent-50">Games available to join</h1>
+        <p className="text-sm text-quaternary-400">
           Browse open matches and grab your spot before the roster fills up.
         </p>
         <Link
           to="/games/create"
-          className="mt-2 w-fit rounded-md bg-pitch-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-pitch-200"
+          className="mt-2 w-fit rounded-md bg-pitch-500 px-4 py-2 text-sm font-semibold text-primary-800 transition hover:bg-pitch-400 active:bg-pitch-400 touch-manipulation"
         >
           Create a new game
         </Link>
@@ -47,15 +47,15 @@ const AvailableGamesPage = () => {
         <div
           className={`rounded-md border px-4 py-3 text-sm ${
             status.type === 'success'
-              ? 'border-pitch-500/40 bg-pitch-500/10 text-pitch-200'
-              : 'border-red-500/40 bg-red-500/10 text-red-300'
+              ? 'border-success-500/40 bg-success-500/10 text-success-300'
+              : 'border-warning-500/40 bg-warning-500/10 text-warning-300'
           }`}
         >
           {status.message}
         </div>
       )}
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-warning-400">{error}</p>}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <AvailableGamesList games={availableGames} loading={loading} onJoin={handleJoinGame} />

@@ -38,41 +38,41 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950 p-8 shadow-xl">
+      <section className="rounded-3xl border border-tertiary-500/30 bg-gradient-to-br from-secondary-700 to-primary-800 p-8 shadow-xl">
         <p className="text-sm uppercase tracking-wide text-pitch-200">Welcome back</p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-100">
+        <h1 className="mt-2 text-3xl font-bold text-accent-50">
           {user?.displayName?.split(' ')[0] || 'Player'}, ready for your next match?
         </h1>
-        <p className="mt-3 max-w-2xl text-sm text-slate-400">
+        <p className="mt-3 max-w-2xl text-sm text-quaternary-400">
           Coordinate friendly matches, keep track of who is playing, and grow your local soccer community with just a few clicks.
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5">
-            <p className="text-xs uppercase tracking-wide text-slate-400">Scheduled games</p>
+          <div className="rounded-2xl border border-tertiary-500/30 bg-secondary-700/80 p-5">
+            <p className="text-xs uppercase tracking-wide text-quaternary-400">Scheduled games</p>
             <p className="mt-2 text-3xl font-semibold text-pitch-200">{games.length}</p>
-            <p className="mt-1 text-xs text-slate-500">Matches on the calendar for everyone to join.</p>
-            <Link to="/games/create" className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100">
+            <p className="mt-1 text-xs text-quaternary-500">Matches on the calendar for everyone to join.</p>
+            <Link to="/games/create" className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100 transition">
               Create a game →
             </Link>
           </div>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5">
-            <p className="text-xs uppercase tracking-wide text-slate-400">Open games</p>
+          <div className="rounded-2xl border border-tertiary-500/30 bg-secondary-700/80 p-5">
+            <p className="text-xs uppercase tracking-wide text-quaternary-400">Open games</p>
             <p className="mt-2 text-3xl font-semibold text-pitch-200">{availableGames.length}</p>
-            <p className="mt-1 text-xs text-slate-500">Matches looking for more players right now.</p>
+            <p className="mt-1 text-xs text-quaternary-500">Matches looking for more players right now.</p>
             <Link
               to="/games/available"
-              className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100"
+              className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100 transition"
             >
               See all games →
             </Link>
           </div>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5">
-            <p className="text-xs uppercase tracking-wide text-slate-400">Your games</p>
+          <div className="rounded-2xl border border-tertiary-500/30 bg-secondary-700/80 p-5">
+            <p className="text-xs uppercase tracking-wide text-quaternary-400">Your games</p>
             <p className="mt-2 text-3xl font-semibold text-pitch-200">{joinedGames.length}</p>
-            <p className="mt-1 text-xs text-slate-500">You are confirmed on these upcoming fixtures.</p>
+            <p className="mt-1 text-xs text-quaternary-500">You are confirmed on these upcoming fixtures.</p>
             <Link
               to="/games/available"
-              className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100"
+              className="mt-4 inline-flex text-xs font-semibold text-pitch-200 hover:text-pitch-100 transition"
             >
               Manage games →
             </Link>
@@ -82,13 +82,13 @@ const Dashboard = () => {
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-slate-100">Upcoming games</h2>
+          <h2 className="text-xl font-semibold text-accent-50">Upcoming games</h2>
           <div className="flex gap-3 text-xs font-semibold">
-            <Link to="/games/available" className="text-pitch-200 hover:text-pitch-100">
+            <Link to="/games/available" className="text-pitch-200 hover:text-pitch-100 transition">
               Join a game
             </Link>
-            <span className="text-slate-500">•</span>
-            <Link to="/games/create" className="text-pitch-200 hover:text-pitch-100">
+            <span className="text-quaternary-500">•</span>
+            <Link to="/games/create" className="text-pitch-200 hover:text-pitch-100 transition">
               Create a game
             </Link>
           </div>
@@ -107,40 +107,40 @@ const Dashboard = () => {
             return (
               <article
                 key={game.id}
-                className="rounded-2xl border border-pitch-500/30 bg-slate-900/70 p-5 shadow-lg"
+                className="rounded-2xl border border-pitch-500/30 bg-secondary-700/70 p-5 shadow-lg"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-100">{game.title}</h3>
-                    <p className="text-sm text-slate-400">{game.location}</p>
+                    <h3 className="text-lg font-semibold text-accent-50">{game.title}</h3>
+                    <p className="text-sm text-quaternary-400">{game.location}</p>
                   </div>
                 </div>
                 <dl className="mt-4 space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <dt className="text-slate-400">Field</dt>
-                    <dd className="font-medium text-slate-200">{game.location || 'TBD'}</dd>
+                    <dt className="text-quaternary-400">Field</dt>
+                    <dd className="font-medium text-quaternary-300">{game.location || 'TBD'}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-slate-400">Date</dt>
-                    <dd className="font-medium text-slate-200">{formatGameDate(game.startTime)}</dd>
+                    <dt className="text-quaternary-400">Date</dt>
+                    <dd className="font-medium text-quaternary-300">{formatGameDate(game.startTime)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-slate-400">Kickoff</dt>
-                    <dd className="font-medium text-slate-200">{formatGameTime(game.startTime)}</dd>
+                    <dt className="text-quaternary-400">Kickoff</dt>
+                    <dd className="font-medium text-quaternary-300">{formatGameTime(game.startTime)}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-slate-400">Players</dt>
-                    <dd className="font-medium text-slate-200">{playersLabel}</dd>
+                    <dt className="text-quaternary-400">Players</dt>
+                    <dd className="font-medium text-quaternary-300">{playersLabel}</dd>
                   </div>
                 </dl>
-                <p className="mt-3 text-xs text-slate-500">Confirmed teammates keep this match on track.</p>
+                <p className="mt-3 text-xs text-quaternary-500">Confirmed teammates keep this match on track.</p>
                 {progress !== null && (
                   <div className="mt-4">
-                    <div className="flex justify-between text-[11px] text-slate-400">
+                    <div className="flex justify-between text-[11px] text-quaternary-400">
                       <span>Spots filled</span>
                       <span>{progress}%</span>
                     </div>
-                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-secondary-600">
                       <div
                         className="h-full rounded-full bg-pitch-500"
                         style={{ width: `${progress}%` }}
@@ -152,7 +152,7 @@ const Dashboard = () => {
             );
           })}
           {!joinedGames.length && (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 text-sm text-slate-400">
+            <div className="rounded-2xl border border-tertiary-500/30 bg-secondary-700/70 p-6 text-sm text-quaternary-400">
               You have not joined any games yet. Hop over to the games tab to grab a spot!
             </div>
           )}
