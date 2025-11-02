@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/config.js';
 import { useAuth } from './useAuth.js';
+import { trackGameCreated, trackGameJoined, trackGameLeft, trackGameDeleted } from '../firebase/analytics.js';
 
 export const useGames = () => {
   const { user } = useAuth();
@@ -55,14 +56,16 @@ export const useGames = () => {
       setError(null);
       const gamesRef = collection(db, 'pickupSoccer_games');
       const parsedMaxPlayers = Number(maxPlayers);
-      await addDoc(gamesRef, {
+      const maxPlayersValue = Number.isFinite(parsedMaxPlayers) && parsedMaxPlayers > 0 ? parsedMaxPlayers : null;
+      
+      const docRef = await addDoc(gamesRef, {
         title,
         location,
         startTime: Timestamp.fromDate(new Date(startTime)),
         createdAt: serverTimestamp(),
         createdBy: user.uid,
         createdByName: user.displayName,
-        maxPlayers: Number.isFinite(parsedMaxPlayers) && parsedMaxPlayers > 0 ? parsedMaxPlayers : null,
+        maxPlayers: maxPlayersValue,
         participants: [
           {
             uid: user.uid,
@@ -70,6 +73,12 @@ export const useGames = () => {
             photoURL: user.photoURL,
           },
         ],
+      });
+
+      // Track game creation
+      trackGameCreated({
+        maxPlayers: maxPlayersValue,
+        location: location || 'unknown',
       });
     },
     [user],
@@ -116,6 +125,16 @@ export const useGames = () => {
           photoURL: user.photoURL,
         }),
       });
+
+      // Track game join
+      trackGameJoined(gameId, {
+        participants: [...(game.participants || []), {
+          uid: user.uid,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        }],
+        maxPlayers: maxPlayers,
+      });
     },
     [games, user],
   );
@@ -138,6 +157,9 @@ export const useGames = () => {
       await updateDoc(gameRef, {
         participants: arrayRemove(participant),
       });
+
+      // Track game leave
+      trackGameLeft(gameId);
     },
     [games, user],
   );
@@ -161,6 +183,9 @@ export const useGames = () => {
       setError(null);
       const gameRef = doc(db, 'pickupSoccer_games', gameId);
       await deleteDoc(gameRef);
+
+      // Track game deletion
+      trackGameDeleted(gameId);
     },
     [games, user],
   );
