@@ -91,7 +91,7 @@ const Layout = ({ children }) => {
                 ? 'mt-4 flex flex-col gap-4 border-t border-tertiary-500/30 pt-4'
                 : 'hidden'
             }`}
-          >
+            >
             <nav className="flex flex-col gap-2">
               {navLinks.map(({ to, label, end }) => (
                 <NavLink
