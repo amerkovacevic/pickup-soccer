@@ -15,7 +15,6 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/config.js';
 import { useAuth } from './useAuth.js';
-import { trackGameCreated, trackGameJoined, trackGameLeft, trackGameDeleted } from '../firebase/analytics.js';
 
 export const useGames = () => {
   const { user } = useAuth();
@@ -74,12 +73,6 @@ export const useGames = () => {
           },
         ],
       });
-
-      // Track game creation
-      trackGameCreated({
-        maxPlayers: maxPlayersValue,
-        location: location || 'unknown',
-      });
     },
     [user],
   );
@@ -125,16 +118,6 @@ export const useGames = () => {
           photoURL: user.photoURL,
         }),
       });
-
-      // Track game join
-      trackGameJoined(gameId, {
-        participants: [...(game.participants || []), {
-          uid: user.uid,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-        }],
-        maxPlayers: maxPlayers,
-      });
     },
     [games, user],
   );
@@ -157,9 +140,6 @@ export const useGames = () => {
       await updateDoc(gameRef, {
         participants: arrayRemove(participant),
       });
-
-      // Track game leave
-      trackGameLeft(gameId);
     },
     [games, user],
   );
@@ -183,9 +163,6 @@ export const useGames = () => {
       setError(null);
       const gameRef = doc(db, 'pickupSoccer_games', gameId);
       await deleteDoc(gameRef);
-
-      // Track game deletion
-      trackGameDeleted(gameId);
     },
     [games, user],
   );

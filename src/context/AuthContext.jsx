@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { getAdditionalUserInfo, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/config.js';
 import { upsertPlayerProfile } from '../firebase/players.js';
-import { trackSignIn, trackSignUp, trackSignOut, setAnalyticsUserProperties } from '../firebase/analytics.js';
 
 const AuthContext = createContext({
   user: null,
@@ -21,11 +20,6 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
-      
-      // Set user properties for analytics
-      if (firebaseUser) {
-        setAnalyticsUserProperties(firebaseUser);
-      }
     });
 
     return unsubscribe;
@@ -38,16 +32,8 @@ export const AuthProvider = ({ children }) => {
 
       const additionalInfo = getAdditionalUserInfo(credential);
       
-      // Track authentication event
-      if (additionalInfo?.isNewUser) {
-        trackSignUp('google');
-      } else {
-        trackSignIn('google');
-      }
-      
       try {
         await upsertPlayerProfile(credential.user, additionalInfo?.isNewUser);
-        setAnalyticsUserProperties(credential.user);
       } catch (profileError) {
         console.error('Failed to save the player profile', profileError);
         setError('We signed you in, but we could not save your player profile. Some features may not work.');
@@ -61,7 +47,6 @@ export const AuthProvider = ({ children }) => {
   const signOutUser = async () => {
     setError(null);
     try {
-      trackSignOut();
       await signOut(auth);
     } catch (err) {
       console.error('Sign out failed', err);

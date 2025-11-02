@@ -7,7 +7,6 @@ import GamesPage from './pages/Games.jsx';
 import AvailableGamesPage from './pages/AvailableGames.jsx';
 import CreateGamePage from './pages/CreateGame.jsx';
 import Login from './pages/Login.jsx';
-import { PageTracker } from './components/PageTracker.jsx';
 
 const App = () => {
   const { user, loading } = useAuth();
@@ -22,7 +21,6 @@ const App = () => {
 
   return (
     <>
-      <PageTracker />
       <Routes>
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
       <Route

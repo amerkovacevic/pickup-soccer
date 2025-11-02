@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { getAnalytics, isSupported } from 'firebase/analytics';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -28,27 +27,3 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
-
-// Initialize Analytics (only in browser environment)
-let analytics = null;
-if (typeof window !== 'undefined') {
-  // Initialize analytics asynchronously
-  isSupported()
-    .then((supported) => {
-      if (supported) {
-        try {
-          analytics = getAnalytics(app);
-          console.log('Firebase Analytics initialized');
-        } catch (error) {
-          console.warn('Failed to initialize Analytics:', error);
-        }
-      } else {
-        console.warn('Firebase Analytics is not supported in this environment');
-      }
-    })
-    .catch((error) => {
-      console.warn('Analytics check failed:', error);
-    });
-}
-
-export { analytics };
