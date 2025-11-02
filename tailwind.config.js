@@ -8,8 +8,8 @@ export default {
     './src/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
+    fontFamily: tailwindFonts,
     extend: {
-      fontFamily: tailwindFonts,
       colors: {
         ...tailwindColors,
         // Keep pitch color for soccer-specific elements (using tertiary from palette)
