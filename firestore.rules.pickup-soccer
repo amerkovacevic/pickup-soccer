@@ -750,6 +750,9 @@ service cloud.firestore {
           resource.data.participants,
           getAfter(/databases/$(database)/documents/pickupSoccer_games/$(gameId)).data.participants
         );
+
+      allow delete: if isSignedIn()
+        && resource.data.createdBy == request.auth.uid;
     }
 
     match /pickupSoccer_players/{playerId} {
