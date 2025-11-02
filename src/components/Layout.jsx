@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth.js';
 const navLinkClasses = ({ isActive }) =>
   `rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150 ${
     isActive
-      ? 'bg-pitch-500 text-primary-800 shadow-lg'
+      ? 'bg-pitch-500 text-accent-50 shadow-lg'
       : 'text-quaternary-300 hover:bg-secondary-600 hover:text-accent-50'
   }`;
 

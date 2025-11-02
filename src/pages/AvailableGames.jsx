@@ -37,7 +37,7 @@ const AvailableGamesPage = () => {
         </p>
         <Link
           to="/games/create"
-          className="mt-2 w-fit rounded-md bg-pitch-500 px-4 py-2 text-sm font-semibold text-primary-800 transition hover:bg-pitch-400 active:bg-pitch-400 touch-manipulation"
+          className="mt-2 w-fit rounded-md bg-pitch-500 px-4 py-2 text-sm font-semibold text-accent-50 transition hover:bg-pitch-400 active:bg-pitch-400 touch-manipulation"
         >
           Create a new game
         </Link>

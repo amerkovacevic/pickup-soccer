@@ -91,7 +91,7 @@ const CreateGameForm = ({ onSubmit, isSubmitting = false }) => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-lg bg-pitch-500 px-4 py-2 text-sm font-semibold text-primary-800 transition hover:bg-pitch-400 active:bg-pitch-400 disabled:cursor-not-allowed disabled:bg-secondary-600 disabled:text-quaternary-500 touch-manipulation"
+          className="rounded-lg bg-pitch-500 px-4 py-2 text-sm font-semibold text-accent-50 transition hover:bg-pitch-400 active:bg-pitch-400 disabled:cursor-not-allowed disabled:bg-secondary-600 disabled:text-quaternary-500 touch-manipulation"
         >
           {isSubmitting ? 'Publishing…' : 'Publish game'}
         </button>

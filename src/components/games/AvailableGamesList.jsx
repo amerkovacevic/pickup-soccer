@@ -56,7 +56,7 @@ const AvailableGamesList = ({ games, loading, onJoin }) => (
                   className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition touch-manipulation active:scale-95 ${
                     isFull
                       ? 'cursor-not-allowed bg-secondary-600 text-quaternary-500'
-                      : 'bg-pitch-500 text-primary-800 hover:bg-pitch-400 active:bg-pitch-400'
+                      : 'bg-pitch-500 text-accent-50 hover:bg-pitch-400 active:bg-pitch-400'
                   }`}
                 >
                   {isFull ? 'Game full' : 'Join game'}
