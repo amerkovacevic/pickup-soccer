@@ -6,7 +6,7 @@ export const upsertPlayerProfile = async (user, isNewUser = false) => {
     throw new Error('A valid user is required to save the player profile.');
   }
 
-  const playerRef = doc(db, 'players', user.uid);
+  const playerRef = doc(db, 'pickupSoccer_players', user.uid);
   const payload = {
     displayName: user.displayName ?? '',
     email: user.email ?? '',

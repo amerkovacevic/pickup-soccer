@@ -1,6 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Pickup Soccer app - scoped to pickupSoccer_* collections only
+    // This ensures these rules don't affect other apps in the same Firebase project
     function isSignedIn() {
       return request.auth != null;
     }
@@ -727,7 +729,8 @@ service cloud.firestore {
         || isLeave(existingParticipants, newParticipants);
     }
 
-    match /games/{gameId} {
+    // Pickup Soccer app - scoped to pickupSoccer_* collections only
+    match /pickupSoccer_games/{gameId} {
       allow read: if true;
 
       allow create: if isSignedIn()
@@ -740,16 +743,16 @@ service cloud.firestore {
       allow update: if isSignedIn()
         && request.writeFields.hasOnly(['participants'])
         && resource.data.participants is list
-        && getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants is list
+        && getAfter(/databases/$(database)/documents/pickupSoccer_games/$(gameId)).data.participants is list
         && participantsWithinLimit(resource.data.participants)
-        && participantsWithinLimit(getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants)
+        && participantsWithinLimit(getAfter(/databases/$(database)/documents/pickupSoccer_games/$(gameId)).data.participants)
         && isParticipantUpdateAllowed(
           resource.data.participants,
-          getAfter(/databases/$(database)/documents/games/$(gameId)).data.participants
+          getAfter(/databases/$(database)/documents/pickupSoccer_games/$(gameId)).data.participants
         );
     }
 
-    match /players/{playerId} {
+    match /pickupSoccer_players/{playerId} {
       allow read: if isSignedIn();
 
       allow create, update: if isSignedIn()
@@ -757,3 +760,4 @@ service cloud.firestore {
     }
   }
 }
+

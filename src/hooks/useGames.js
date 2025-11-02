@@ -22,7 +22,7 @@ export const useGames = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const gamesRef = collection(db, 'games');
+    const gamesRef = collection(db, 'pickupSoccer_games');
     const gamesQuery = query(gamesRef, orderBy('startTime', 'asc'));
 
     const unsubscribe = onSnapshot(
@@ -52,7 +52,7 @@ export const useGames = () => {
       }
 
       setError(null);
-      const gamesRef = collection(db, 'games');
+      const gamesRef = collection(db, 'pickupSoccer_games');
       const parsedMaxPlayers = Number(maxPlayers);
       await addDoc(gamesRef, {
         title,
@@ -81,7 +81,7 @@ export const useGames = () => {
       }
 
       setError(null);
-      const gameRef = doc(db, 'games', gameId);
+      const gameRef = doc(db, 'pickupSoccer_games', gameId);
       const game = games.find((item) => item.id === gameId);
 
       if (!game) {
@@ -133,7 +133,7 @@ export const useGames = () => {
       }
 
       setError(null);
-      const gameRef = doc(db, 'games', gameId);
+      const gameRef = doc(db, 'pickupSoccer_games', gameId);
       await updateDoc(gameRef, {
         participants: arrayRemove(participant),
       });

@@ -17,7 +17,7 @@
   "firestore": {
     "database": "(default)",
     "location": "nam5",
-    "rules": "firestore.rules",
+    "rules": "firestore.rules.pickup-soccer",
     "indexes": "firestore.indexes.json"
   }
 }
