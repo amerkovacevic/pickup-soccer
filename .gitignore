@@ -6,4 +6,18 @@ app/dist
 npm-debug.log*
 .env
 .env.local
+.env.development
+.env.production
+.env.*
+!.env.example
+
+# Firebase service account keys
+service-account*.json
+firebase-adminsdk*.json
+*-service-account*.json
+*serviceAccount*.json
+*.key.json
+
+# Firebase local cache
 .firebase
+.firebaserc.local
