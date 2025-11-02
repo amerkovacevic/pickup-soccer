@@ -1,4 +1,4 @@
-import { tailwindColors } from '../shared-design-tokens.js';
+import { tailwindColors, tailwindFonts } from '../shared-design-tokens.js';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -8,9 +8,7 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        display: ['"Bebas Neue"', 'cursive'],
-      },
+      fontFamily: tailwindFonts,
       colors: {
         ...tailwindColors,
         // Keep pitch color for soccer-specific elements (using tertiary from palette)

@@ -13,7 +13,7 @@ const Login = () => {
   }, [user, navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary-800 via-secondary-700 to-primary-800 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-primary-800 px-4">
         <div className="w-full max-w-lg space-y-8 rounded-3xl border border-tertiary-500/50 bg-secondary-700/90 p-10 text-center shadow-2xl shadow-tertiary-500/20 backdrop-blur">
           <div className="space-y-3">
             <p className="text-sm uppercase tracking-[0.35em] text-tertiary-400">Pickup Soccer</p>

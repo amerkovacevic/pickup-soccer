@@ -38,7 +38,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-3xl border border-tertiary-500/30 bg-gradient-to-br from-secondary-700 to-primary-800 p-8 shadow-xl">
+      <section className="rounded-3xl border border-tertiary-500/30 bg-secondary-700/80 p-8 shadow-xl">
         <p className="text-sm uppercase tracking-wide text-pitch-200">Welcome back</p>
         <h1 className="mt-2 text-3xl font-bold text-accent-50">
           {user?.displayName?.split(' ')[0] || 'Player'}, ready for your next match?
