@@ -1,7 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "games",
+      "collectionGroup": "pickupSoccer_games",
       "queryScope": "COLLECTION",
       "fields": [
         {
