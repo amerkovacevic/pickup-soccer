@@ -5,8 +5,8 @@ import { useAuth } from '../hooks/useAuth.js';
 const navLinkClasses = ({ isActive }) =>
   `rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150 ${
     isActive
-      ? 'bg-pitch-500 text-accent-50 shadow-lg'
-      : 'text-quaternary-300 hover:bg-secondary-600 hover:text-accent-50'
+      ? 'bg-tertiary-100 text-tertiary-700 shadow-lg'
+      : 'text-primary-600 hover:bg-accent-100 hover:text-primary-900'
   }`;
 
 const Layout = ({ children }) => {
@@ -28,11 +28,11 @@ const Layout = ({ children }) => {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-primary-800">
-      <header className="border-b border-tertiary-500/30 bg-primary-800/90 backdrop-blur">
+    <div className="flex min-h-screen flex-col bg-accent-50">
+      <header className="border-b border-primary-200 bg-white backdrop-blur">
         <div className="mx-auto w-full max-w-6xl px-4 py-4">
           <div className="flex items-center justify-between gap-4">
-            <Link to="/" className="text-2xl font-bold text-pitch-200">
+            <Link to="/" className="text-2xl font-bold text-primary-900">
               Pickup Soccer
             </Link>
             <nav className="hidden items-center gap-4 md:flex">
@@ -47,17 +47,17 @@ const Layout = ({ children }) => {
                 <img
                   src={user.photoURL}
                   alt={user.displayName ?? 'Profile'}
-                  className="h-10 w-10 rounded-full border border-tertiary-600"
+                  className="h-10 w-10 rounded-full border border-primary-300"
                   referrerPolicy="no-referrer"
                 />
               )}
               <div className="text-right">
-                <p className="text-sm font-semibold text-accent-50">{user?.displayName}</p>
-                <p className="text-xs text-quaternary-400">{user?.email}</p>
+                <p className="text-sm font-semibold text-primary-900">{user?.displayName}</p>
+                <p className="text-xs text-primary-600">{user?.email}</p>
               </div>
               <button
                 onClick={signOutUser}
-                className="rounded-md bg-secondary-700 px-4 py-2 text-sm font-medium text-accent-50 transition hover:bg-secondary-600 active:bg-secondary-600 touch-manipulation"
+                className="rounded-md bg-white border border-primary-300 px-4 py-2 text-sm font-medium text-primary-700 transition hover:bg-accent-100 active:bg-accent-100 touch-manipulation"
               >
                 Sign out
               </button>
@@ -65,7 +65,7 @@ const Layout = ({ children }) => {
             <button
               type="button"
               onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center rounded-md border border-tertiary-600 p-2 text-accent-50 transition hover:bg-secondary-700 active:bg-secondary-700 md:hidden touch-manipulation"
+              className="inline-flex items-center justify-center rounded-md border border-primary-300 p-2 text-primary-900 transition hover:bg-accent-100 active:bg-accent-100 md:hidden touch-manipulation"
               aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={isMobileMenuOpen}
             >
@@ -88,7 +88,7 @@ const Layout = ({ children }) => {
           <div
             className={`md:hidden ${
               isMobileMenuOpen
-                ? 'mt-4 flex flex-col gap-4 border-t border-tertiary-500/30 pt-4'
+                ? 'mt-4 flex flex-col gap-4 border-t border-primary-200 pt-4'
                 : 'hidden'
             }`}
             >
@@ -112,18 +112,18 @@ const Layout = ({ children }) => {
                 <img
                   src={user.photoURL}
                   alt={user.displayName ?? 'Profile'}
-                  className="h-12 w-12 rounded-full border border-tertiary-600"
+                  className="h-12 w-12 rounded-full border border-primary-300"
                   referrerPolicy="no-referrer"
                 />
               )}
               <div>
-                <p className="text-sm font-semibold text-accent-50">{user?.displayName}</p>
-                <p className="text-xs text-quaternary-400">{user?.email}</p>
+                <p className="text-sm font-semibold text-primary-900">{user?.displayName}</p>
+                <p className="text-xs text-primary-600">{user?.email}</p>
               </div>
             </div>
             <button
               onClick={handleSignOut}
-              className="w-full rounded-md bg-secondary-700 px-4 py-2 text-sm font-medium text-accent-50 transition hover:bg-secondary-600 active:bg-secondary-600 touch-manipulation"
+              className="w-full rounded-md bg-white border border-primary-300 px-4 py-2 text-sm font-medium text-primary-700 transition hover:bg-accent-100 active:bg-accent-100 touch-manipulation"
             >
               Sign out
             </button>
@@ -133,7 +133,7 @@ const Layout = ({ children }) => {
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6">
         {children}
       </main>
-      <footer className="w-full border-t border-tertiary-500/30 bg-primary-800/80 py-4 text-center text-xs text-quaternary-500">
+      <footer className="w-full border-t border-primary-200 bg-accent-100 py-4 text-center text-xs text-primary-600">
         <p>&copy; {new Date().getFullYear()} Amer Kovacevic All rights reserved.</p>
       </footer>
     </div>

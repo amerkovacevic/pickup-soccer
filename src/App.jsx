@@ -13,7 +13,7 @@ const App = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-primary-800">
+      <div className="flex min-h-screen items-center justify-center bg-accent-50">
         <LoadingState />
       </div>
     );
